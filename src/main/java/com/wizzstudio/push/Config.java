@@ -30,7 +30,7 @@ public class Config {
         return agentId;
     }
     @Value("${wechat.agentId}")
-    public static void setAgentId(Integer agentId) {
+    public void setAgentId(Integer agentId) {
         Config.agentId = agentId;
     }
 

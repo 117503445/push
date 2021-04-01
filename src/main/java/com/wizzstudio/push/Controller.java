@@ -10,11 +10,17 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
+
 @RestController
 public class Controller {
     @RequestMapping("/push")
 
-    public String get(@RequestParam(required = true) String name, @RequestParam(required = false) String text) throws WxErrorException {
+    public String get(HttpServletRequest request, @RequestParam(required = true) String name, @RequestParam(required = false) String text) throws WxErrorException, IOException {
+
+        String bodyText = new String(request.getInputStream().readAllBytes());
+
         WxCpDefaultConfigImpl config = new WxCpDefaultConfigImpl();
         config.setCorpId(Config.getCorpId());
         config.setCorpSecret(Config.getCorpSecret());
@@ -22,8 +28,9 @@ public class Controller {
 
         WxCpServiceImpl wxCpService = new WxCpServiceImpl();
         wxCpService.setWxCpConfigStorage(config);
-        WxCpMessage message = WxCpMessage.TEXT().agentId(1000002).toUser(name).content(text).build();
+        WxCpMessage message = WxCpMessage.TEXT().agentId(Config.getAgentId()).toUser(name).content(text).build();
         wxCpService.getMessageService().send(message);
+
         return "hello";
     }
 }
