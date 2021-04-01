@@ -19,7 +19,17 @@ public class Controller {
 
     public String get(HttpServletRequest request, @RequestParam(required = true) String name, @RequestParam(required = false) String text) throws WxErrorException, IOException {
 
+        String content;
+
         String bodyText = new String(request.getInputStream().readAllBytes());
+        if (bodyText.length() > 0) {
+            content = bodyText;
+        } else if (text != null && text.length() > 0) {
+            content = text;
+        } else {
+            return "Don't pass text";
+        }
+
 
         WxCpDefaultConfigImpl config = new WxCpDefaultConfigImpl();
         config.setCorpId(Config.getCorpId());
@@ -28,7 +38,7 @@ public class Controller {
 
         WxCpServiceImpl wxCpService = new WxCpServiceImpl();
         wxCpService.setWxCpConfigStorage(config);
-        WxCpMessage message = WxCpMessage.TEXT().agentId(Config.getAgentId()).toUser(name).content(text).build();
+        WxCpMessage message = WxCpMessage.TEXT().agentId(Config.getAgentId()).toUser(name).content(content).build();
         wxCpService.getMessageService().send(message);
 
         return "hello";
