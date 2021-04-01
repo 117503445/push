@@ -1,0 +1,6 @@
+wechat:
+  corpId: ""
+  corpSecret: ""
+  agentId: 123
+server:
+  port: 80
