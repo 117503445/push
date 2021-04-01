@@ -6,12 +6,13 @@ import me.chanjar.weixin.cp.api.impl.WxCpServiceImpl;
 import me.chanjar.weixin.cp.bean.message.WxCpMessage;
 import me.chanjar.weixin.cp.config.impl.WxCpDefaultConfigImpl;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class Controller {
-    @GetMapping("/push")
+    @RequestMapping("/push")
 
     public String get(@RequestParam(required = true) String name, @RequestParam(required = false) String text) throws WxErrorException {
         WxCpDefaultConfigImpl config = new WxCpDefaultConfigImpl();
