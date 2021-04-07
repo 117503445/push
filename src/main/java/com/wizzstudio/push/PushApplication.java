@@ -8,7 +8,6 @@ public class PushApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(PushApplication.class, args);
-
     }
 
 }
