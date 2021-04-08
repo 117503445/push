@@ -1,4 +1,4 @@
-package com.wizzstudio.push;
+package com.wizzstudio.push.controller;
 
 import com.wizzstudio.push.config.FileConfig;
 import com.wizzstudio.push.model.CommonResult;
@@ -13,9 +13,8 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
 @RestController
-public class Controller {
-    @RequestMapping("/push")
-
+public class TextController {
+    @RequestMapping("/push/text/v1")
     public CommonResult<String> get(HttpServletRequest request, @RequestParam(required = true) String name, @RequestParam(required = false) String text) throws WxErrorException, IOException {
 
         String content;
@@ -26,14 +25,13 @@ public class Controller {
         } else if (text != null && text.length() > 0) {
             content = text;
         } else {
-            return new CommonResult<String>(0,"id not found","");
+            return new CommonResult<String>(0, "id not found", "");
 
         }
-
 
         WxCpMessage message = WxCpMessage.TEXT().agentId(FileConfig.getAgentId()).toUser(name).content(content).build();
         WechatService.getWxCpService().getMessageService().send(message);
 
-        return new CommonResult<String>(0,"success","");
+        return new CommonResult<String>(0, "success", "");
     }
 }
