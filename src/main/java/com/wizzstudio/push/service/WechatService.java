@@ -1,6 +1,6 @@
 package com.wizzstudio.push.service;
 
-import com.wizzstudio.push.Config;
+import com.wizzstudio.push.config.FileConfig;
 import me.chanjar.weixin.cp.api.impl.WxCpServiceImpl;
 import me.chanjar.weixin.cp.config.impl.WxCpDefaultConfigImpl;
 
@@ -9,9 +9,9 @@ public class WechatService {
 
     static {
         WxCpDefaultConfigImpl config = new WxCpDefaultConfigImpl();
-        config.setCorpId(Config.getCorpId());
-        config.setCorpSecret(Config.getCorpSecret());
-        config.setAgentId(Config.getAgentId());
+        config.setCorpId(FileConfig.getCorpId());
+        config.setCorpSecret(FileConfig.getCorpSecret());
+        config.setAgentId(FileConfig.getAgentId());
 
         wxCpService = new WxCpServiceImpl();
         wxCpService.setWxCpConfigStorage(config);

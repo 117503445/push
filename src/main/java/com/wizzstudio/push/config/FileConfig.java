@@ -1,10 +1,10 @@
-package com.wizzstudio.push;
+package com.wizzstudio.push.config;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-public class Config {
+public class FileConfig {
 
     private static String corpId;
     private static String corpSecret;
@@ -15,7 +15,7 @@ public class Config {
     }
     @Value("${wechat.corpId}")
     public void setCorpId(String corpid) {
-        Config.corpId = corpid;
+        FileConfig.corpId = corpid;
     }
 
     public static String getCorpSecret() {
@@ -23,7 +23,7 @@ public class Config {
     }
     @Value("${wechat.corpSecret}")
     public void setCorpSecret(String corpSecret) {
-        Config.corpSecret = corpSecret;
+        FileConfig.corpSecret = corpSecret;
     }
 
     public static Integer getAgentId() {
@@ -31,7 +31,7 @@ public class Config {
     }
     @Value("${wechat.agentId}")
     public void setAgentId(Integer agentId) {
-        Config.agentId = agentId;
+        FileConfig.agentId = agentId;
     }
 
 }
