@@ -1,37 +1,28 @@
 package com.wizzstudio.push.controller;
 
+import com.alibaba.fastjson.JSONObject;
 import com.wizzstudio.push.config.FileConfig;
 import com.wizzstudio.push.model.CommonResult;
 import com.wizzstudio.push.service.WechatService;
 import me.chanjar.weixin.common.error.WxErrorException;
 import me.chanjar.weixin.cp.bean.message.WxCpMessage;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.util.Map;
 
 
 @RestController
 public class CardController {
     @RequestMapping("/push/card/v1")
-    public CommonResult<String> get(HttpServletRequest request, @RequestParam(required = true) String name, @RequestParam(required = false) String text) throws WxErrorException, IOException {
-
-        String content;
-
-        String bodyText = new String(request.getInputStream().readAllBytes());
-        if (bodyText.length() > 0) {
-            content = bodyText;
-        } else if (text != null && text.length() > 0) {
-            content = text;
-        } else {
-            return new CommonResult<String>(0, "id not found", "");
-
+    public CommonResult<String> get(@RequestBody Map<String, String> body) {
+        WxCpMessage message = WxCpMessage.TEXTCARD().agentId(FileConfig.getAgentId()).toUser(body.get("name")).title(body.get("tittle")).description(body.get("description")).url(body.get("url")).btnTxt(body.get("btnTxt")).build();
+        try {
+            WechatService.getWxCpService().getMessageService().send(message);
+        } catch (WxErrorException e) {
+            e.printStackTrace();
         }
-
-        WxCpMessage message = WxCpMessage.TEXTCARD().agentId(FileConfig.getAgentId()).toUser(name).title("Mytitle").description("myde").url("https://www.baidu.com").btnTxt("btn").build();
-        WechatService.getWxCpService().getMessageService().send(message);
 
         return new CommonResult<String>(0, "success", "");
     }
