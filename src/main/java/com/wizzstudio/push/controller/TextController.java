@@ -30,6 +30,6 @@ public class TextController {
         WxCpMessage message = WxCpMessage.TEXT().agentId(FileConfig.getAgentId()).toUser(name).content(content).build();
         WechatService.getWxCpService().getMessageService().send(message);
 
-        return CommonResult.Success(null);
+        return CommonResult.Success();
     }
 }
