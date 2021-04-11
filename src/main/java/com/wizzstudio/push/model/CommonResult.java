@@ -1,27 +1,24 @@
 package com.wizzstudio.push.model;
 
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
-import org.springframework.http.ResponseEntity;
+import lombok.NoArgsConstructor;
+
 @Data
-public final class CommonResult<T> {
+@NoArgsConstructor
+@AllArgsConstructor
+public final class CommonResult {
 
-        private int code = 0;
+    private int code = 0;
 
-        private String message = "";
+    private String message = "";
 
-        private T data;
+    private Object data;
 
-        public CommonResult() {
-        }
-
-        public CommonResult(int code,String message, T data) {
-           this.code = code;
-           this.message=message;
-           this.data=data;
-        }
-
-
+    public static CommonResult Success(Object data) {
+        return new CommonResult(0, "success", data);
     }
+}
 
 

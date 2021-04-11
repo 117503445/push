@@ -15,7 +15,7 @@ import java.io.IOException;
 @RestController
 public class MarkDownController {
     @RequestMapping("/push/markdown/v1")
-    public CommonResult<String> get(HttpServletRequest request, @RequestParam(required = true) String name, @RequestParam(required = false) String text) throws WxErrorException, IOException {
+    public CommonResult get(HttpServletRequest request, @RequestParam(required = true) String name, @RequestParam(required = false) String text) throws WxErrorException, IOException {
 
         String content;
 
@@ -25,13 +25,13 @@ public class MarkDownController {
         } else if (text != null && text.length() > 0) {
             content = text;
         } else {
-            return new CommonResult<String>(0, "id not found", "");
+            return new CommonResult(0, "id not found", "");
 
         }
 
         WxCpMessage message = WxCpMessage.MARKDOWN().agentId(FileConfig.getAgentId()).toUser(name).content(content).build();
         WechatService.getWxCpService().getMessageService().send(message);
 
-        return new CommonResult<String>(0, "success", "");
+        return new CommonResult(0, "success", "");
     }
 }
