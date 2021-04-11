@@ -15,7 +15,7 @@ import java.io.IOException;
 @RestController
 public class TextController {
     @RequestMapping("/push/text/v1")
-    public CommonResult<String> get(HttpServletRequest request, @RequestParam(required = true) String name, @RequestParam(required = false) String text) throws WxErrorException, IOException {
+    public CommonResult<String> get(HttpServletRequest request, @RequestParam() String name, @RequestParam(required = false) String text) throws WxErrorException, IOException {
 
         String content;
 
@@ -25,13 +25,12 @@ public class TextController {
         } else if (text != null && text.length() > 0) {
             content = text;
         } else {
-            return new CommonResult<String>(0, "id not found", "");
-
+            return new CommonResult<>(1, "content not found", "");
         }
 
         WxCpMessage message = WxCpMessage.TEXT().agentId(FileConfig.getAgentId()).toUser(name).content(content).build();
         WechatService.getWxCpService().getMessageService().send(message);
 
-        return new CommonResult<String>(0, "success", "");
+        return new CommonResult<>(0, "success", "");
     }
 }
