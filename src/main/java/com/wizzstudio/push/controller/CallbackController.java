@@ -35,7 +35,11 @@ public class CallbackController {
         WxCpXmlMessage inMessage = WxCpXmlMessage.fromEncryptedXml(requestBody, WechatService.getWxCpService().getWxCpConfigStorage(),
                 timestamp, nonce, signature);
 
-        WxCpMessage message = WxCpMessage.TEXT().agentId(FileConfig.getAgentId()).toUser(inMessage.getUserId()).content("Hello" + inMessage.getUserId()).build();
+        var userId = inMessage.getUserId();
+
+        var text = String.format("%s 你好,你可以通过访问 https://push.gh.117503445.top:20000/push/text/v1?name=%s&text=hello 向微信发送通知,更多使用方法请查看文档", userId, userId);
+
+        WxCpMessage message = WxCpMessage.TEXT().agentId(FileConfig.getAgentId()).toUser(userId).content(text).build();
         try {
             WechatService.getWxCpService().getMessageService().send(message);
         } catch (Exception e) {
