@@ -1,5 +1,6 @@
 package com.wizzstudio.push.controller;
 
+import com.wizzstudio.push.config.ApiVersion;
 import com.wizzstudio.push.config.FileConfig;
 import com.wizzstudio.push.model.CardDTO;
 import com.wizzstudio.push.model.CommonResult;
@@ -12,8 +13,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 
 @RestController
-public class CardController {
-    @RequestMapping("/push/card/v1")
+@RequestMapping("push/card")
+public class CardController{
+    @RequestMapping("/{version}")
+    @ApiVersion()
     public CommonResult get(@RequestBody CardDTO cardDto) throws WxErrorException {
         WxCpMessage message = WxCpMessage.TEXTCARD().
                 agentId(FileConfig.getAgentId()).

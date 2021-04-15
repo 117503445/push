@@ -1,10 +1,12 @@
 package com.wizzstudio.push.controller;
 
+import com.wizzstudio.push.config.ApiVersion;
 import com.wizzstudio.push.config.FileConfig;
 import com.wizzstudio.push.model.CommonResult;
 import com.wizzstudio.push.service.WechatService;
 import me.chanjar.weixin.common.error.WxErrorException;
 import me.chanjar.weixin.cp.bean.message.WxCpMessage;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -13,8 +15,11 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
 @RestController
+@RequestMapping("/push/markdown")
 public class MarkDownController {
-    @RequestMapping("/push/markdown/v1")
+
+    @GetMapping("/{version}")
+    @ApiVersion()
     public CommonResult get(HttpServletRequest request, @RequestParam(required = true) String name, @RequestParam(required = false) String text) throws WxErrorException, IOException {
 
         String content;

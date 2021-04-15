@@ -1,19 +1,14 @@
 package com.wizzstudio.push.controller;
 
 import com.wizzstudio.push.config.FileConfig;
-import com.wizzstudio.push.model.CardDTO;
 import com.wizzstudio.push.model.CommonResult;
 import com.wizzstudio.push.service.WechatService;
-import me.chanjar.weixin.common.api.WxConsts;
-import me.chanjar.weixin.common.error.WxErrorException;
 import me.chanjar.weixin.common.util.crypto.WxCryptUtil;
 import me.chanjar.weixin.cp.bean.message.WxCpMessage;
 import me.chanjar.weixin.cp.bean.message.WxCpXmlMessage;
-import me.chanjar.weixin.cp.util.crypto.WxCpCryptUtil;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-
 public class CallbackController {
     @GetMapping("/callback")
     public String verify(

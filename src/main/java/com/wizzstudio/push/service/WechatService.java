@@ -1,10 +1,7 @@
 package com.wizzstudio.push.service;
-
 import com.wizzstudio.push.config.FileConfig;
 import me.chanjar.weixin.cp.api.impl.WxCpServiceImpl;
 import me.chanjar.weixin.cp.config.impl.WxCpDefaultConfigImpl;
-
-import java.lang.constant.Constable;
 
 public class WechatService {
     static WxCpServiceImpl wxCpService;
@@ -20,7 +17,6 @@ public class WechatService {
         wxCpService = new WxCpServiceImpl();
         wxCpService.setWxCpConfigStorage(config);
     }
-
     public static WxCpServiceImpl getWxCpService() {
         return wxCpService;
     }

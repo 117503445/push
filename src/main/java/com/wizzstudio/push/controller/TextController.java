@@ -1,5 +1,6 @@
 package com.wizzstudio.push.controller;
 
+import com.wizzstudio.push.config.ApiVersion;
 import com.wizzstudio.push.config.FileConfig;
 import com.wizzstudio.push.model.CommonResult;
 import com.wizzstudio.push.service.WechatService;
@@ -13,8 +14,10 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
 @RestController
+@RequestMapping("push/text")
 public class TextController {
-    @RequestMapping("/push/text/v1")
+    @RequestMapping("/{version}")
+    @ApiVersion()
     public CommonResult get(HttpServletRequest request, @RequestParam() String name, @RequestParam(required = false) String text) throws WxErrorException, IOException {
         String content;
 
