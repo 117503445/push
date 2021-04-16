@@ -1,6 +1,6 @@
 package com.wizzstudio.push.controller;
 
-import com.wizzstudio.push.config.FileConfig;
+import com.wizzstudio.push.config.StaticFactory;
 import com.wizzstudio.push.model.CommonResult;
 import com.wizzstudio.push.service.WechatService;
 import me.chanjar.weixin.common.util.crypto.WxCryptUtil;
@@ -34,7 +34,7 @@ public class CallbackController {
 
         var text = String.format("%s 你好,你可以通过访问 https://push.gh.117503445.top:20000/push/text/v1?name=%s&text=hello 向微信发送通知,更多使用方法请查看文档", userId, userId);
 
-        WxCpMessage message = WxCpMessage.TEXT().agentId(FileConfig.getAgentId()).toUser(userId).content(text).build();
+        WxCpMessage message = WxCpMessage.TEXT().agentId(StaticFactory.getWeChatConfig().getAgentId()).toUser(userId).content(text).build();
         try {
             WechatService.getWxCpService().getMessageService().send(message);
         } catch (Exception e) {

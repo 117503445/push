@@ -1,7 +1,7 @@
 package com.wizzstudio.push.controller;
 
 import com.wizzstudio.push.config.ApiVersion;
-import com.wizzstudio.push.config.FileConfig;
+import com.wizzstudio.push.config.StaticFactory;
 import com.wizzstudio.push.model.CommonResult;
 import com.wizzstudio.push.service.WechatService;
 import me.chanjar.weixin.common.error.WxErrorException;
@@ -16,9 +16,14 @@ import java.io.IOException;
 @RestController
 @RequestMapping("push/text")
 public class TextController {
+
+
     @RequestMapping("/{version}")
     @ApiVersion()
     public CommonResult get(HttpServletRequest request, @RequestParam() String name, @RequestParam(required = false) String text) throws WxErrorException, IOException {
+
+
+
         String content;
 
         String bodyText = new String(request.getInputStream().readAllBytes());
@@ -30,7 +35,7 @@ public class TextController {
             return new CommonResult(2, "content not found", null);
         }
 
-        WxCpMessage message = WxCpMessage.TEXT().agentId(FileConfig.getAgentId()).toUser(name).content(content).build();
+        WxCpMessage message = WxCpMessage.TEXT().agentId(StaticFactory.getWeChatConfig().getAgentId()).toUser(name).content(content).build();
         WechatService.getWxCpService().getMessageService().send(message);
 
         return CommonResult.Success();

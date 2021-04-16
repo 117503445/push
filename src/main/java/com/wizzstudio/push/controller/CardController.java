@@ -1,7 +1,7 @@
 package com.wizzstudio.push.controller;
 
 import com.wizzstudio.push.config.ApiVersion;
-import com.wizzstudio.push.config.FileConfig;
+import com.wizzstudio.push.config.StaticFactory;
 import com.wizzstudio.push.model.CardDTO;
 import com.wizzstudio.push.model.CommonResult;
 import com.wizzstudio.push.service.WechatService;
@@ -19,7 +19,7 @@ public class CardController{
     @ApiVersion()
     public CommonResult get(@RequestBody CardDTO cardDto) throws WxErrorException {
         WxCpMessage message = WxCpMessage.TEXTCARD().
-                agentId(FileConfig.getAgentId()).
+                agentId(StaticFactory.getWeChatConfig().getAgentId()).
                 toUser(cardDto.getName()).
                 title(cardDto.getTitle()).
                 description(cardDto.getDescription()).

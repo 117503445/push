@@ -1,7 +1,7 @@
 package com.wizzstudio.push.controller;
 
 import com.wizzstudio.push.config.ApiVersion;
-import com.wizzstudio.push.config.FileConfig;
+import com.wizzstudio.push.config.StaticFactory;
 import com.wizzstudio.push.model.CommonResult;
 import com.wizzstudio.push.service.WechatService;
 import me.chanjar.weixin.common.error.WxErrorException;
@@ -20,7 +20,7 @@ public class MarkDownController {
 
     @GetMapping("/{version}")
     @ApiVersion()
-    public CommonResult get(HttpServletRequest request, @RequestParam(required = true) String name, @RequestParam(required = false) String text) throws WxErrorException, IOException {
+    public CommonResult get(HttpServletRequest request, @RequestParam String name, @RequestParam(required = false) String text) throws WxErrorException, IOException {
 
         String content;
 
@@ -34,7 +34,7 @@ public class MarkDownController {
 
         }
 
-        WxCpMessage message = WxCpMessage.MARKDOWN().agentId(FileConfig.getAgentId()).toUser(name).content(content).build();
+        WxCpMessage message = WxCpMessage.MARKDOWN().agentId(StaticFactory.getWeChatConfig().getAgentId()).toUser(name).content(content).build();
         WechatService.getWxCpService().getMessageService().send(message);
 
         return new CommonResult(0, "success", "");
