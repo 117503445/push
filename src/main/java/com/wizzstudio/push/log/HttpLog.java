@@ -1,8 +1,9 @@
 package com.wizzstudio.push.log;
 
-import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
-import org.aspectj.lang.annotation.*;
+import org.aspectj.lang.annotation.Around;
+import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.annotation.Pointcut;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -23,28 +24,6 @@ public class HttpLog {
     public void webLog() {
     }
 
-    /**
-     * 在切点之前织入
-     *
-     * @param joinPoint
-     * @throws Throwable
-     */
-    @Before("webLog()")
-    public void doBefore(JoinPoint joinPoint) {
-        // 开始打印请求日志
-        ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
-
-        if (attributes != null) {
-            HttpServletRequest request = attributes.getRequest();
-            logger.info("========================================== Start ==========================================");
-            logger.info("{} {}", request.getMethod(), request.getRequestURI() + "?" + request.getQueryString());
-            // 打印调用 controller 的全路径以及执行方法
-            logger.info("Class Method   : {}.{}", joinPoint.getSignature().getDeclaringTypeName(), joinPoint.getSignature().getName());
-            // 打印请求的 IP
-            logger.info("IP             : {}", getIpAddr(request));
-        }
-    }
-
 
     /**
      * 环绕
@@ -55,13 +34,20 @@ public class HttpLog {
      */
     @Around("webLog()")
     public Object doAround(ProceedingJoinPoint proceedingJoinPoint) throws Throwable {
-
-
         long startTime = System.currentTimeMillis();
         Object result = proceedingJoinPoint.proceed();
 
         ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
         if (attributes != null) {
+
+            HttpServletRequest request = attributes.getRequest();
+            logger.info("========================================== Start ==========================================");
+            logger.info("{} {}", request.getMethod(), request.getRequestURI() + "?" + request.getQueryString());
+            // 打印调用 controller 的全路径以及执行方法
+            logger.info("Class Method   : {}.{}", proceedingJoinPoint.getSignature().getDeclaringTypeName(), proceedingJoinPoint.getSignature().getName());
+            // 打印请求的 IP
+            logger.info("IP             : {}", getIpAddr(request));
+
             var response = attributes.getResponse();
             if (response != null) {
                 logger.info("Status Code  : {}", response.getStatus());
@@ -73,16 +59,6 @@ public class HttpLog {
         logger.info("=========================================== End ===========================================");
         logger.info("");
         return result;
-    }
-
-    /**
-     * 在切点之后织入
-     *
-     * @throws Throwable
-     */
-    @After("webLog()")
-    public void doAfter() {
-
     }
 
     public String getIpAddr(HttpServletRequest request) {
