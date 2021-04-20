@@ -8,8 +8,6 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.client.RequestOptions;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -21,7 +19,6 @@ import java.util.Map;
 @Aspect
 @Component
 public class HttpLog {
-    private final static Logger logger = LoggerFactory.getLogger(HttpLog.class);
 
     /**
      * 以 controller 包下定义的所有请求为切入点
