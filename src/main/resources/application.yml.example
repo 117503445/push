@@ -2,5 +2,14 @@ wechat:
   corpId: ""
   corpSecret: ""
   agentId: 123
+  aesKey: ""
+  token: ""
+es:
+  enabled: false
+  scheme: "http"
+  host: "localhost"
+  port: 9200
+  username: "elastic"
+  password: "mypassword"
 server:
   port: 80
