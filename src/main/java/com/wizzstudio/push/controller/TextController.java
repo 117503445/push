@@ -1,11 +1,13 @@
 package com.wizzstudio.push.controller;
 
 import com.wizzstudio.push.config.ApiVersion;
+import com.wizzstudio.push.config.ESConfig;
 import com.wizzstudio.push.config.StaticFactory;
 import com.wizzstudio.push.model.CommonResult;
 import com.wizzstudio.push.service.WechatService;
 import me.chanjar.weixin.common.error.WxErrorException;
 import me.chanjar.weixin.cp.bean.message.WxCpMessage;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -16,16 +18,15 @@ import java.io.IOException;
 @RestController
 @RequestMapping("push/text")
 public class TextController {
+    @Autowired
+    ESConfig esConfig;
 
 
     @RequestMapping("/{version}")
     @ApiVersion()
     public CommonResult get(HttpServletRequest request, @RequestParam() String name, @RequestParam(required = false) String text) throws WxErrorException, IOException {
-
-
-
+        System.out.println(esConfig);
         String content;
-
         String bodyText = new String(request.getInputStream().readAllBytes());
         if (bodyText.length() > 0) {
             content = bodyText;
@@ -40,4 +41,5 @@ public class TextController {
 
         return CommonResult.Success();
     }
+
 }

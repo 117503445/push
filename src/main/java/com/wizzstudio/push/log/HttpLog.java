@@ -15,6 +15,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.util.ContentCachingRequestWrapper;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -77,7 +78,8 @@ public class HttpLog {
 
         jsonMap.put("duration", System.currentTimeMillis() - startTime);
 
-        var response = attributes.getResponse();
+        //todo 原本使用var
+        HttpServletResponse response = attributes.getResponse();
         if (response != null) {
             jsonMap.put("statusCode", response.getStatus());
         }

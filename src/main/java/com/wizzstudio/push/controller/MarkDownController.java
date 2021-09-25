@@ -23,7 +23,6 @@ public class MarkDownController {
     public CommonResult get(HttpServletRequest request, @RequestParam String name, @RequestParam(required = false) String text) throws WxErrorException, IOException {
 
         String content;
-
         String bodyText = new String(request.getInputStream().readAllBytes());
         if (bodyText.length() > 0) {
             content = bodyText;

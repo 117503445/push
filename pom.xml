@@ -14,7 +14,7 @@
     <name>push</name>
     <description>push message</description>
     <properties>
-        <java.version>16</java.version>
+        <java.version>8</java.version>
     </properties>
     <dependencies>
         <!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-dependencies -->

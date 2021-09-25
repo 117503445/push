@@ -1,0 +1,49 @@
+package com.wizzstudio.push.config;
+
+import com.wizzstudio.push.handler.ClickHandler;
+import com.wizzstudio.push.handler.SubscribeHandler;
+import com.wizzstudio.push.handler.TextHandler;
+import com.wizzstudio.push.model.EventType;
+import com.wizzstudio.push.model.MsgType;
+import com.wizzstudio.push.service.WechatService;
+import me.chanjar.weixin.cp.api.WxCpService;
+import me.chanjar.weixin.cp.api.impl.WxCpServiceImpl;
+import me.chanjar.weixin.cp.config.WxCpConfigStorage;
+import me.chanjar.weixin.cp.message.WxCpMessageRouter;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+/**
+ * @Author: TheR1sing3un
+ * @Date: 2021/09/25/12:13
+ * @Description: 配置接收消息的路由规则
+ */
+
+@Configuration
+public class WxMessageRouterConfig {
+
+    @Autowired
+    private SubscribeHandler subscribeHandler;
+
+    @Autowired
+    private TextHandler textHandler;
+
+    @Autowired
+    private ClickHandler clickHandler;
+
+    @Bean
+    public WxCpMessageRouter router(){
+        //获得企业微信Service对象
+        WxCpService wxCpService = WechatService.getWxCpService();
+        //获取微信配置信息
+        WxCpConfigStorage wxCpConfig = wxCpService.getWxCpConfigStorage();
+        //创建WxMessageRouter对象
+        WxCpMessageRouter router = new WxCpMessageRouter(wxCpService);
+        router.rule().msgType(MsgType.EVENT).async(false).event(EventType.SUBSCRIBE).handler(subscribeHandler).end();//配置用户关注事件的路由
+        router.rule().msgType(MsgType.TEXT).async(false).handler(textHandler).end();//配置用户发送文本消息的路由
+        router.rule().msgType(MsgType.EVENT).async(false).event(EventType.CLICK).handler(clickHandler).end();//配置用户点击菜单后点击事件的路由
+        return router;
+    }
+
+}
