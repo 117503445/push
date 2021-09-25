@@ -18,9 +18,9 @@ import java.io.IOException;
 @RestController
 @RequestMapping("push/text")
 public class TextController {
+
     @Autowired
     ESConfig esConfig;
-
 
     @RequestMapping("/{version}")
     @ApiVersion()
