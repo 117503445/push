@@ -11,18 +11,4 @@ public class EventType {
 
     public static final String CLICK = "click";
 
-    public class EvenKey{
-
-        //使用中的昵称
-        public static final String NICKNAME_ABLE = "nickname_able";
-
-        //禁用中的昵称
-        public static final String NICKNAME_DISABLE = "nickname_disable";
-
-        //添加昵称
-        public static final String NICKNAME_ADD = "nickname_add";
-
-        //禁用昵称
-        public static final String NICKNAME_BAN = "nickname_ban";
-    }
 }

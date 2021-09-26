@@ -23,7 +23,6 @@ public class RedisTemplateConfig {
     public RedisTemplate<Object, Object> redisTemplate(RedisConnectionFactory factory) {
         RedisTemplate<Object, Object> template = new RedisTemplate<>();
         RedisSerializer<String> redisSerializer = new StringRedisSerializer();
-
         template.setConnectionFactory(factory);
         //key序列化方式
         template.setKeySerializer(redisSerializer);

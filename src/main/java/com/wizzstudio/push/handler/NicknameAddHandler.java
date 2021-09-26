@@ -1,6 +1,5 @@
 package com.wizzstudio.push.handler;
 
-import com.wizzstudio.push.builder.OutMessageBuilder;
 import com.wizzstudio.push.builder.OutTextMessageBuilder;
 import me.chanjar.weixin.common.error.WxErrorException;
 import me.chanjar.weixin.common.session.WxSessionManager;
@@ -20,16 +19,14 @@ import java.util.Map;
  */
 
 @Component
-public class ClickHandler implements WxCpMessageHandler {
+public class NicknameAddHandler implements WxCpMessageHandler {
 
     @Autowired
     private OutTextMessageBuilder textMessageBuilder;
 
     @Override
     public WxCpXmlOutMessage handle(WxCpXmlMessage wxCpXmlMessage, Map<String, Object> map, WxCpService wxCpService, WxSessionManager wxSessionManager) throws WxErrorException {
-        System.out.println("点击事件的路由");
         WxCpXmlOutMessage outMessage = textMessageBuilder.build("点击事件" + wxCpXmlMessage.getEventKey(), wxCpXmlMessage, wxCpService);
-        System.out.println("返回点击事件的outMessage");
         return outMessage;
     }
 }

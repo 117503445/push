@@ -1,13 +1,11 @@
 package com.wizzstudio.push.config;
 
-import com.wizzstudio.push.handler.ClickHandler;
-import com.wizzstudio.push.handler.SubscribeHandler;
-import com.wizzstudio.push.handler.TextHandler;
+import com.wizzstudio.push.handler.*;
+import com.wizzstudio.push.model.EventKey;
 import com.wizzstudio.push.model.EventType;
 import com.wizzstudio.push.model.MsgType;
 import com.wizzstudio.push.service.WechatService;
 import me.chanjar.weixin.cp.api.WxCpService;
-import me.chanjar.weixin.cp.api.impl.WxCpServiceImpl;
 import me.chanjar.weixin.cp.config.WxCpConfigStorage;
 import me.chanjar.weixin.cp.message.WxCpMessageRouter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +28,15 @@ public class WxMessageRouterConfig {
     private TextHandler textHandler;
 
     @Autowired
-    private ClickHandler clickHandler;
+    private NicknameAddHandler clickHandler;
+
+    private NicknameAbleHandler ableHandler;
+
+    private NicknameDisabledHandler disabledHandler;
+
+    private NicknameDisableHandler disableHandler;
+
+    private NicknameEnableHandler enableHandler;
 
     @Bean
     public WxCpMessageRouter router(){
@@ -42,7 +48,11 @@ public class WxMessageRouterConfig {
         WxCpMessageRouter router = new WxCpMessageRouter(wxCpService);
         router.rule().msgType(MsgType.EVENT).async(false).event(EventType.SUBSCRIBE).handler(subscribeHandler).end();//配置用户关注事件的路由
         router.rule().msgType(MsgType.TEXT).async(false).handler(textHandler).end();//配置用户发送文本消息的路由
-        router.rule().msgType(MsgType.EVENT).async(false).event(EventType.CLICK).handler(clickHandler).end();//配置用户点击菜单后点击事件的路由
+        router.rule().msgType(MsgType.EVENT).async(false).event(EventType.CLICK).eventKey(EventKey.NICKNAME_ABLE).handler(ableHandler).end();//配置用户点击查看可用昵称事件的路由
+        router.rule().msgType(MsgType.EVENT).async(false).event(EventType.CLICK).eventKey(EventKey.NICKNAME_DISABLED).handler(disabledHandler).end();//配置用户查看已禁用昵称事件的路由
+        router.rule().msgType(MsgType.EVENT).async(false).event(EventType.CLICK).eventKey(EventKey.NICKNAME_ADD).handler(ableHandler).end();//配置用户添加新昵称事件的路由
+        router.rule().msgType(MsgType.EVENT).async(false).event(EventType.CLICK).eventKey(EventKey.NICKNAME_ENABLE).handler(enableHandler).end();//配置用户启用昵称事件的路由
+        router.rule().msgType(MsgType.EVENT).async(false).event(EventType.CLICK).eventKey(EventKey.NICKNAME_DISABLE).handler(disableHandler).end();//配置用户禁用昵称事件的路由
         return router;
     }
 

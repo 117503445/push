@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
@@ -32,10 +31,8 @@ public class MarkDownController {
             return new CommonResult(0, "id not found", "");
 
         }
-
         WxCpMessage message = WxCpMessage.MARKDOWN().agentId(StaticFactory.getWeChatConfig().getAgentId()).toUser(name).content(content).build();
         WechatService.getWxCpService().getMessageService().send(message);
-
         return new CommonResult(0, "success", "");
     }
 }

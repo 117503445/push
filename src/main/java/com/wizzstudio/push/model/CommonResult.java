@@ -8,24 +8,39 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public final class CommonResult {
+public final class CommonResult<T> {
 
-    public static final int USER_NO_EXISTS = 400001;//用户不存在
+    public static final Integer SUCCESS = 20000;
 
-    public static final int USERNAME_ABANDON = 400002;//用户昵称已禁用
+    public static final Integer ERROR = 40000;
 
-    private int code = 0;
+    private Integer code;
 
-    private String message = "";
+    private String msg;
 
-    private Object data;
+    private T data;
 
-    public static CommonResult Success() {
-        return new CommonResult(0, "success", null);
+    public static CommonResult ok() {
+        return new CommonResult(SUCCESS, "success", null);
     }
 
-    public static CommonResult Success(Object data) {
-        return new CommonResult(0, "success", data);
+    public static <T>CommonResult error(T data) {
+        return new CommonResult(ERROR, "success", data);
+    }
+
+    public CommonResult code(Integer code){
+        this.code = code;
+        return this;
+    }
+
+    public CommonResult msg(String msg){
+        this.msg = msg;
+        return this;
+    }
+
+    public CommonResult<T> data(T data){
+        this.data = data;
+        return this;
     }
 }
 
