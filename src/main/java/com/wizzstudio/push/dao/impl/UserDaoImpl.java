@@ -24,7 +24,7 @@ public class UserDaoImpl implements UserDao {
     private final String NAME_ID = "name-id";
 
     //存储nickname和able(是否可用)映射的key
-    private final String NAME_ABLE = "name_able";
+    private final String NAME_ABLE = "name-able";
 
     /**
      * 查询是否有该昵称
@@ -41,7 +41,7 @@ public class UserDaoImpl implements UserDao {
      * @return 所有昵称和用户id的map
      */
     @Override
-    public Map<String,Object> listNicknamesAndIds() {
+    public Map<String,String> listNicknamesAndIds() {
         return redisUtils.hKeys(NAME_ID);
     }
 
@@ -50,10 +50,9 @@ public class UserDaoImpl implements UserDao {
      * @return 所有昵称和可用状态的map
      */
     @Override
-    public Map<String,Object> listNicknamesAndStatus() {
+    public Map<String,String> listNicknamesAndStatus() {
         return redisUtils.hKeys(NAME_ABLE);
     }
-
 
     /**
      * 根据昵称查用户id
@@ -62,7 +61,7 @@ public class UserDaoImpl implements UserDao {
      */
     @Override
     public String getUserIdByNickname(String nickname) {
-        String userId =(String) redisUtils.hget(NAME_ID, nickname);
+        String userId = (String) redisUtils.hget(NAME_ID, nickname);
         return userId;
     }
 
@@ -76,7 +75,6 @@ public class UserDaoImpl implements UserDao {
         return (boolean) redisUtils.hget(NAME_ABLE,nickname);
     }
 
-
     /**
      * 更改该昵称可用状态
      * @param nickname
@@ -85,7 +83,7 @@ public class UserDaoImpl implements UserDao {
      */
     @Override
     public boolean updateStatusByNickname(String nickname, boolean status) {
-        return redisUtils.hset(NAME_ABLE, nickname, status);
+        return redisUtils.hset(NAME_ABLE, nickname,String.valueOf(status));
     }
 
     /**
@@ -106,6 +104,6 @@ public class UserDaoImpl implements UserDao {
      */
     @Override
     public boolean saveNicknameAndStatus(String nickname){
-        return redisUtils.hset(NAME_ID, nickname, true);
+        return redisUtils.hset(NAME_ID, nickname, String.valueOf(true));
     }
 }

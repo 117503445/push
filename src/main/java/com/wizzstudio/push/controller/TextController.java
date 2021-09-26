@@ -39,7 +39,7 @@ public class TextController {
         WxCpMessage message = WxCpMessage.TEXT().agentId(StaticFactory.getWeChatConfig().getAgentId()).toUser(name).content(content).build();
         WechatService.getWxCpService().getMessageService().send(message);
 
-        return CommonResult.Success();
+        return CommonResult.ok();
     }
 
 }

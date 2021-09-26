@@ -10,7 +10,6 @@ import lombok.NoArgsConstructor;
  * @Description: 用户在企业微信和后台交互通用返回类
  */
 @NoArgsConstructor
-@AllArgsConstructor
 @Data
 public class WxUserResult {
 

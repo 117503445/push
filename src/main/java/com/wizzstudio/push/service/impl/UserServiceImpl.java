@@ -57,16 +57,16 @@ public class UserServiceImpl implements UserService {
         //构建昵称集合
         List<String> nicknames = new LinkedList<>();
         //分别获取昵称和id的hash表
-        Map<String, Object> nicknamesAndIds = userDao.listNicknamesAndIds();
+        Map<String, String > nicknamesAndIds = userDao.listNicknamesAndIds();
         //获得迭代器
-        Iterator<Map.Entry<String, Object>> iterator = nicknamesAndIds.entrySet().iterator();
+        Iterator<Map.Entry<String, String>> iterator = nicknamesAndIds.entrySet().iterator();
         //对昵称和id的关系表进行遍历
         while(iterator.hasNext()){
-            Map.Entry<String, Object> entry = iterator.next();
+            Map.Entry<String, String> entry = iterator.next();
             //获取当前遍历到的昵称(也就是key)
             String nicknameNow = entry.getKey();
             //获取当前遍历到的用户id(也就是value)
-            String userIdNow =(String) entry.getValue();
+            String userIdNow = entry.getValue();
             //只有当当前的遍历到的用户id是我们要查的用户id时加入该用户的昵称集合
             if (userIdNow.equals(userId)){
                 nicknames.add(nicknameNow);
@@ -85,20 +85,20 @@ public class UserServiceImpl implements UserService {
         //构建可用昵称集合
         List<String> nicknames = new LinkedList<>();
         //分别获取昵称和id以及昵称和可用状态的hash表
-        Map<String, Object> nicknamesAndIds = userDao.listNicknamesAndIds();
+        Map<String, String> nicknamesAndIds = userDao.listNicknamesAndIds();
         //之所以获得昵称和状态的集合是为了避免后续遍历过程中频繁的去redis里面查
-        Map<String, Object> nicknamesAndStatus = userDao.listNicknamesAndStatus();
+        Map<String, String> nicknamesAndStatus = userDao.listNicknamesAndStatus();
         //获得迭代器
-        Iterator<Map.Entry<String, Object>> iterator = nicknamesAndIds.entrySet().iterator();
+        Iterator<Map.Entry<String, String>> iterator = nicknamesAndIds.entrySet().iterator();
         //对昵称和id的关系表进行遍历
         while(iterator.hasNext()){
-            Map.Entry<String, Object> entry = iterator.next();
+            Map.Entry<String, String> entry = iterator.next();
             //获取当前遍历到的昵称(也就是key)
             String nicknameNow = entry.getKey();
             //获取当前遍历到的用户id(也就是value)
-            String userIdNow =(String) entry.getValue();
+            String userIdNow = entry.getValue();
             //只有当当前的遍历到的用户id是我们要查的用户id并且该昵称可用的时候,加入该用户的昵称集合
-            if (userIdNow.equals(userId) && ((boolean) nicknamesAndStatus.get(nicknameNow) == true)){
+            if (userIdNow.equals(userId) && "true".equals(nicknamesAndStatus.get(nicknameNow))){
                 nicknames.add(nicknameNow);
             }
         }
@@ -115,20 +115,20 @@ public class UserServiceImpl implements UserService {
         //构建不可用昵称集合
         List<String> nicknames = new LinkedList<>();
         //分别获取昵称和id以及昵称和可用状态的hash表
-        Map<String, Object> nicknamesAndIds = userDao.listNicknamesAndIds();
+        Map<String, String> nicknamesAndIds = userDao.listNicknamesAndIds();
         //之所以获得昵称和状态的集合是为了避免后续遍历过程中频繁的去redis里面查
-        Map<String, Object> nicknamesAndStatus = userDao.listNicknamesAndStatus();
+        Map<String, String> nicknamesAndStatus = userDao.listNicknamesAndStatus();
         //获得迭代器
-        Iterator<Map.Entry<String, Object>> iterator = nicknamesAndIds.entrySet().iterator();
+        Iterator<Map.Entry<String, String>> iterator = nicknamesAndIds.entrySet().iterator();
         //对昵称和id的关系表进行遍历
         while(iterator.hasNext()){
-            Map.Entry<String, Object> entry = iterator.next();
+            Map.Entry<String, String> entry = iterator.next();
             //获取当前遍历到的昵称(也就是key)
             String nicknameNow = entry.getKey();
             //获取当前遍历到的用户id(也就是value)
-            String userIdNow =(String) entry.getValue();
+            String userIdNow = entry.getValue();
             //只有当当前的遍历到的用户id是我们要查的用户id并且该昵称不可用的时候,加入该用户的昵称集合
-            if (userIdNow.equals(userId) && ((boolean) nicknamesAndStatus.get(nicknameNow) == false)){
+            if (userIdNow.equals(userId) && nicknamesAndStatus.get(nicknameNow) == "true"){
                 nicknames.add(nicknameNow);
             }
         }

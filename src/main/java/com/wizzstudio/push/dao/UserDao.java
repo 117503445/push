@@ -13,9 +13,9 @@ public interface UserDao {
 
     boolean checkNicknameExist(String nickname);
 
-    Map<String,Object> listNicknamesAndIds();
+    Map<String,String> listNicknamesAndIds();
 
-    Map<String,Object> listNicknamesAndStatus();
+    Map<String,String> listNicknamesAndStatus();
 
     String getUserIdByNickname(String nickname);
 

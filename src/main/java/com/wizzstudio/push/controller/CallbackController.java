@@ -51,7 +51,7 @@ public class CallbackController {
             e.printStackTrace();
         }
         System.out.println("通讯录变更返回成功给微信");
-        return CommonResult.Success();
+        return CommonResult.ok();
     }
 }
 

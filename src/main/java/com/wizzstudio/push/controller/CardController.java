@@ -29,6 +29,6 @@ public class CardController{
 
         WechatService.getWxCpService().getMessageService().send(message);
 
-        return CommonResult.Success();
+        return CommonResult.ok();
     }
 }

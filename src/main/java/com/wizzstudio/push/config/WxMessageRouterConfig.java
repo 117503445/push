@@ -30,12 +30,16 @@ public class WxMessageRouterConfig {
     @Autowired
     private NicknameAddHandler clickHandler;
 
+    @Autowired
     private NicknameAbleHandler ableHandler;
 
+    @Autowired
     private NicknameDisabledHandler disabledHandler;
 
+    @Autowired
     private NicknameDisableHandler disableHandler;
 
+    @Autowired
     private NicknameEnableHandler enableHandler;
 
     @Bean

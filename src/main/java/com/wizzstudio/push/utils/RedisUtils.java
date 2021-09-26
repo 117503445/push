@@ -179,7 +179,7 @@ public class RedisUtils {
      * @param key 键
      * @return 对应的多个键值
      */
-    public Map<String, Object> hKeys(String key) {
+    public Map hKeys(String key) {
         return redisTemplate.opsForHash().entries(key);
     }
 
