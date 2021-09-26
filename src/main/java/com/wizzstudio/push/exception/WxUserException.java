@@ -24,6 +24,9 @@ public class WxUserException extends RuntimeException{
     //插入昵称失败
     public static final Integer NICKNAME_ADD_ERROR = 500010;
 
+    //用户流程状态设置失败
+    public static final Integer USER_STATUS_SET_ERROR = 500011;
+
     private Integer code;
 
     private String msg;

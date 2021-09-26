@@ -1,5 +1,6 @@
 package com.wizzstudio.push.dao.impl;
 
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.wizzstudio.push.dao.UserDao;
 import com.wizzstudio.push.utils.RedisUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +27,9 @@ public class UserDaoImpl implements UserDao {
     //存储nickname和able(是否可用)映射的key
     private final String NAME_ABLE = "name-able";
 
+    //存储userId和用户流程状态的key
+    private final String ID_STATUS = "id-status";
+
     /**
      * 查询是否有该昵称
      * @param nickname
@@ -50,7 +54,7 @@ public class UserDaoImpl implements UserDao {
      * @return 所有昵称和可用状态的map
      */
     @Override
-    public Map<String,String> listNicknamesAndStatus() {
+    public Map<String,Boolean> listNicknamesAndStatus() {
         return redisUtils.hKeys(NAME_ABLE);
     }
 
@@ -83,7 +87,7 @@ public class UserDaoImpl implements UserDao {
      */
     @Override
     public boolean updateStatusByNickname(String nickname, boolean status) {
-        return redisUtils.hset(NAME_ABLE, nickname,String.valueOf(status));
+        return redisUtils.hset(NAME_ABLE, nickname,status);
     }
 
     /**
@@ -104,6 +108,47 @@ public class UserDaoImpl implements UserDao {
      */
     @Override
     public boolean saveNicknameAndStatus(String nickname){
-        return redisUtils.hset(NAME_ID, nickname, String.valueOf(true));
+        return redisUtils.hset(NAME_ABLE, nickname, true);
+    }
+
+    /**
+     * 检查改用户是否有状态
+     * @param userId
+     * @return 用户是否有状态
+     */
+    @Override
+    public boolean checkUserStatusExist(String userId) {
+        return redisUtils.hHasKey(ID_STATUS,userId);
+    }
+
+    /**
+     * 获得用户的状态
+     * @param userId
+     * @return 用户的状态(0===表示用户处于添加流程中,1===表示用户处于启用昵称流程中,-1===表示用户处于禁用昵称流程中)
+     */
+    @Override
+    public int getUserStatus(String userId) {
+        return (int)redisUtils.hget(ID_STATUS,userId);
+    }
+
+    /**
+     * 设置用户的流程中状态
+     * @param userId
+     * @param status
+     * @return 是否成功设置
+     */
+    @Override
+    public boolean setUserStatus(String userId, int status) {
+        return redisUtils.hset(ID_STATUS,userId,status);
+    }
+
+    /**
+     * 删除用户状态
+     * @param userId
+     * @return 是否成功删除
+     */
+    @Override
+    public void deleteUserStatus(String userId) {
+        redisUtils.hdel(ID_STATUS,userId);
     }
 }

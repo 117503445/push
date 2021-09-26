@@ -1,5 +1,6 @@
 package com.wizzstudio.push;
 
+import com.wizzstudio.push.dao.UserDao;
 import com.wizzstudio.push.service.UserService;
 import com.wizzstudio.push.utils.RedisUtils;
 import com.wizzstudio.push.utils.TextUtils;
@@ -26,14 +27,14 @@ class PushApplicationTests {
         System.out.println(redisUtils.get("name"));
     }
 
-
-
     @Test
     void testRedis04(){
-        Map<String, Object> nameIds = redisUtils.hKeys("name-id");
-        Map<String, Object> nameAbles = redisUtils.hKeys("name-able");
-        System.out.println("nameIds:"+nameIds);
+        Map map = redisUtils.hKeys("name-id");
+        Map nameAbles = redisUtils.hKeys("name-able");
+        System.out.println("nameIds:"+map);
         System.out.println("nameAbles:"+nameAbles);
+        boolean b = (boolean) nameAbles.get("lcy1");
+        System.out.println(b);
     }
 
     @Test
@@ -61,11 +62,11 @@ class PushApplicationTests {
 
     @Test
     void testRedis06(){
-        redisUtils.hset("name-able","lcy1",String.valueOf(true));
-        redisUtils.hset("name-able","lcy2",String.valueOf(true));
-        redisUtils.hset("name-able","lcy3",String.valueOf(true));
-        redisUtils.hset("name-able","lcy4",String.valueOf(false));
-        redisUtils.hset("name-able","lcy5",String.valueOf(false));
+        redisUtils.hset("name-able","lcy1",true);
+        redisUtils.hset("name-able","lcy2",true);
+        redisUtils.hset("name-able","lcy3",true);
+        redisUtils.hset("name-able","lcy4",false);
+        redisUtils.hset("name-able","lcy5",false);
         redisUtils.hset("name-id","lcy1","LiuChaoYang");
         redisUtils.hset("name-id","lcy2","LiuChaoYang");
         redisUtils.hset("name-id","lcy3","LiuChaoYang");
@@ -75,6 +76,30 @@ class PushApplicationTests {
         Map<String, Object> nameAbles = redisUtils.hKeys("name-able");
         System.out.println("nameIds:"+map);
         System.out.println("nameAbles:"+nameAbles);
+        boolean b  = (boolean) nameAbles.get("lcy1");
+        System.out.println(b);
     }
 
+    @Test
+    void testRedis07(){
+        redisUtils.hset("key","field",1);
+        int back = (int) redisUtils.hget("key", "field");
+        System.out.println(back);
+    }
+
+    @Autowired
+    private UserDao userDao;
+
+    @Test
+    void testRedis08(){
+        for (int i = 0; i < 5; i++) {
+            userService.addNickname("LiuChaoYang","lcy"+i);
+        }
+        userDao.updateStatusByNickname("lcy3",false);
+        userDao.updateStatusByNickname("lcy4",false);
+        Map map = redisUtils.hKeys("name-id");
+        Map nameAbles = redisUtils.hKeys("name-able");
+        System.out.println("nameIds:"+map);
+        System.out.println("nameAbles:"+nameAbles);
+    }
 }

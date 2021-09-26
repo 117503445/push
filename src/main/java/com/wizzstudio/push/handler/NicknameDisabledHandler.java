@@ -1,6 +1,8 @@
 package com.wizzstudio.push.handler;
 
 import com.wizzstudio.push.builder.OutTextMessageBuilder;
+import com.wizzstudio.push.service.UserService;
+import com.wizzstudio.push.utils.TextUtils;
 import me.chanjar.weixin.common.error.WxErrorException;
 import me.chanjar.weixin.common.session.WxSessionManager;
 import me.chanjar.weixin.cp.api.WxCpService;
@@ -10,6 +12,7 @@ import me.chanjar.weixin.cp.message.WxCpMessageHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -23,9 +26,14 @@ public class NicknameDisabledHandler implements WxCpMessageHandler {
     @Autowired
     private OutTextMessageBuilder textMessageBuilder;
 
+    @Autowired
+    private UserService userService;
+
     @Override
     public WxCpXmlOutMessage handle(WxCpXmlMessage wxCpXmlMessage, Map<String, Object> map, WxCpService wxCpService, WxSessionManager wxSessionManager) throws WxErrorException {
-        WxCpXmlOutMessage outMessage = textMessageBuilder.build("点击事件" + wxCpXmlMessage.getEventKey(), wxCpXmlMessage, wxCpService);
+        List<String> nicknamesDisabled = userService.listNicknamesDisabled(wxCpXmlMessage.getFromUserName());
+        String reply = TextUtils.convert(nicknamesDisabled);
+        WxCpXmlOutMessage outMessage = textMessageBuilder.build("您的已禁用的昵称如下:\n\n" + reply, wxCpXmlMessage, wxCpService);
         return outMessage;
     }
 }

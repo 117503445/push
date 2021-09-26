@@ -246,7 +246,7 @@ public class RedisUtils {
      * @param value 值
      * @return true 成功 false失败
      */
-    public boolean hset(String key, String item, Object value) {
+    public boolean hset(String key, String item,Object value) {
         try {
             redisTemplate.opsForHash().put(key, item, value);
             return true;

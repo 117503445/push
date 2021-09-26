@@ -34,7 +34,7 @@ public class NicknameAbleHandler implements WxCpMessageHandler {
     public WxCpXmlOutMessage handle(WxCpXmlMessage wxCpXmlMessage, Map<String, Object> map, WxCpService wxCpService, WxSessionManager wxSessionManager) throws WxErrorException {
         List<String> nicknamesAble = userService.listNicknamesAble(wxCpXmlMessage.getFromUserName());
         String reply = TextUtils.convert(nicknamesAble);
-        WxCpXmlOutMessage outMessage = textMessageBuilder.build("你的可用昵称如下:\n\n" + reply, wxCpXmlMessage, wxCpService);
+        WxCpXmlOutMessage outMessage = textMessageBuilder.build("您的可用昵称如下:\n\n" + reply, wxCpXmlMessage, wxCpService);
         return outMessage;
     }
 }

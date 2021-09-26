@@ -15,7 +15,7 @@ public interface UserDao {
 
     Map<String,String> listNicknamesAndIds();
 
-    Map<String,String> listNicknamesAndStatus();
+    Map<String,Boolean> listNicknamesAndStatus();
 
     String getUserIdByNickname(String nickname);
 
@@ -26,4 +26,12 @@ public interface UserDao {
     boolean saveNicknameAndId(String nickname,String userId);
 
     boolean saveNicknameAndStatus(String nickname);
+
+    boolean checkUserStatusExist(String userId);
+
+    int getUserStatus(String userId);
+
+    boolean setUserStatus(String userId,int status);
+
+    void deleteUserStatus(String userId);
 }

@@ -28,7 +28,7 @@ public class WxMessageRouterConfig {
     private TextHandler textHandler;
 
     @Autowired
-    private NicknameAddHandler clickHandler;
+    private NicknameAddHandler addHandler;
 
     @Autowired
     private NicknameAbleHandler ableHandler;
@@ -54,7 +54,7 @@ public class WxMessageRouterConfig {
         router.rule().msgType(MsgType.TEXT).async(false).handler(textHandler).end();//配置用户发送文本消息的路由
         router.rule().msgType(MsgType.EVENT).async(false).event(EventType.CLICK).eventKey(EventKey.NICKNAME_ABLE).handler(ableHandler).end();//配置用户点击查看可用昵称事件的路由
         router.rule().msgType(MsgType.EVENT).async(false).event(EventType.CLICK).eventKey(EventKey.NICKNAME_DISABLED).handler(disabledHandler).end();//配置用户查看已禁用昵称事件的路由
-        router.rule().msgType(MsgType.EVENT).async(false).event(EventType.CLICK).eventKey(EventKey.NICKNAME_ADD).handler(ableHandler).end();//配置用户添加新昵称事件的路由
+        router.rule().msgType(MsgType.EVENT).async(false).event(EventType.CLICK).eventKey(EventKey.NICKNAME_ADD).handler(addHandler).end();//配置用户添加新昵称事件的路由
         router.rule().msgType(MsgType.EVENT).async(false).event(EventType.CLICK).eventKey(EventKey.NICKNAME_ENABLE).handler(enableHandler).end();//配置用户启用昵称事件的路由
         router.rule().msgType(MsgType.EVENT).async(false).event(EventType.CLICK).eventKey(EventKey.NICKNAME_DISABLE).handler(disableHandler).end();//配置用户禁用昵称事件的路由
         return router;

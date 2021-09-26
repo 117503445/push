@@ -17,6 +17,15 @@ import java.util.*;
 @Service
 public class UserServiceImpl implements UserService {
 
+    //用户处于新增昵称的状态
+    public static final Integer STATUS_ADD = 0;
+
+    //用户处于启用昵称的状态
+    public static final Integer STATUS_ENABLE = 1;
+
+    //用户处于禁用昵称的状态
+    public static final Integer STATUS_DISABLE = -1;
+
     @Autowired
     private UserDao userDao;
 
@@ -87,7 +96,7 @@ public class UserServiceImpl implements UserService {
         //分别获取昵称和id以及昵称和可用状态的hash表
         Map<String, String> nicknamesAndIds = userDao.listNicknamesAndIds();
         //之所以获得昵称和状态的集合是为了避免后续遍历过程中频繁的去redis里面查
-        Map<String, String> nicknamesAndStatus = userDao.listNicknamesAndStatus();
+        Map<String, Boolean> nicknamesAndStatus = userDao.listNicknamesAndStatus();
         //获得迭代器
         Iterator<Map.Entry<String, String>> iterator = nicknamesAndIds.entrySet().iterator();
         //对昵称和id的关系表进行遍历
@@ -98,10 +107,12 @@ public class UserServiceImpl implements UserService {
             //获取当前遍历到的用户id(也就是value)
             String userIdNow = entry.getValue();
             //只有当当前的遍历到的用户id是我们要查的用户id并且该昵称可用的时候,加入该用户的昵称集合
-            if (userIdNow.equals(userId) && "true".equals(nicknamesAndStatus.get(nicknameNow))){
+            if (userIdNow.equals(userId) && nicknamesAndStatus.get(nicknameNow)){
                 nicknames.add(nicknameNow);
             }
         }
+        //删除用户流程状态
+        userDao.deleteUserStatus(userId);
         return nicknames;
     }
 
@@ -111,13 +122,13 @@ public class UserServiceImpl implements UserService {
      * @return 用户的禁用昵称
      */
     @Override
-    public List<String> listNicknameDisabled(String userId) {
+    public List<String> listNicknamesDisabled(String userId) {
         //构建不可用昵称集合
         List<String> nicknames = new LinkedList<>();
         //分别获取昵称和id以及昵称和可用状态的hash表
         Map<String, String> nicknamesAndIds = userDao.listNicknamesAndIds();
         //之所以获得昵称和状态的集合是为了避免后续遍历过程中频繁的去redis里面查
-        Map<String, String> nicknamesAndStatus = userDao.listNicknamesAndStatus();
+        Map<String, Boolean> nicknamesAndStatus = userDao.listNicknamesAndStatus();
         //获得迭代器
         Iterator<Map.Entry<String, String>> iterator = nicknamesAndIds.entrySet().iterator();
         //对昵称和id的关系表进行遍历
@@ -128,10 +139,12 @@ public class UserServiceImpl implements UserService {
             //获取当前遍历到的用户id(也就是value)
             String userIdNow = entry.getValue();
             //只有当当前的遍历到的用户id是我们要查的用户id并且该昵称不可用的时候,加入该用户的昵称集合
-            if (userIdNow.equals(userId) && nicknamesAndStatus.get(nicknameNow) == "true"){
+            if (userIdNow.equals(userId) && !nicknamesAndStatus.get(nicknameNow)){
                 nicknames.add(nicknameNow);
             }
         }
+        //删除用户流程状态
+        userDao.deleteUserStatus(userId);
         return nicknames;
     }
 
@@ -147,6 +160,8 @@ public class UserServiceImpl implements UserService {
         if (exist) throw new WxUserException(WxUserException.NICKNAME_EXISTS,"昵称已被人使用");
         boolean success = userDao.saveNicknameAndId(nickname, userId) && userDao.saveNicknameAndStatus(nickname);
         if (!success) throw new WxUserException(WxUserException.NICKNAME_ADD_ERROR,"新增昵称失败");
+        //删除用户流程状态
+        userDao.deleteUserStatus(userId);
         return nickname;
     }
 
@@ -170,6 +185,78 @@ public class UserServiceImpl implements UserService {
     @Override
     public String disableNickname(String userId, String nickname) {
         return null;
+    }
+
+    /**
+     * 设置当前用户流程状态为正在添加昵称
+     * @param userId
+     * @return 是否成功
+     */
+    @Override
+    public boolean setUserStatusAdd(String userId) {
+        return setUserStatus(userId,STATUS_ADD);
+    }
+
+    /**
+     * 设置当前用户流程状态为正在启用昵称
+     * @param userId
+     * @return 是否成功
+     */
+    @Override
+    public boolean setUserStatusEnable(String userId) {
+        return setUserStatus(userId,STATUS_ENABLE);
+    }
+
+    /**
+     * 设置当前用户流程状态为禁用昵称
+     * @param userId
+     * @return 是否成功
+     */
+    @Override
+    public boolean setUserStatusDisable(String userId) {
+        return setUserStatus(userId,STATUS_DISABLE);
+    }
+
+    /**
+     * 获取当前用户的流程状态
+     * @param userId
+     * @return 用户的流程状态(注意:为null的时候表示当前用户无状态)
+     */
+    @Override
+    public int getUserStatus(String userId) {
+        return userDao.getUserStatus(userId);
+    }
+
+    /**
+     * 检查当前用户是否处于流程中
+     * @param userId
+     * @return 是否处于流程中
+     */
+    @Override
+    public boolean userStatusExists(String userId) {
+        return userDao.checkUserStatusExist(userId);
+    }
+
+    /**
+     * 删除当前用户流程状态
+     * @param userId
+     * @return 是否成功删除
+     */
+    @Override
+    public boolean deleteUserStatus(String userId) {
+        if (!userDao.checkUserStatusExist(userId)) return true;
+        userDao.deleteUserStatus(userId);
+        return true;
+    }
+
+    /**
+     * 设置用户流程状态
+     * @param userId
+     * @param status
+     * @return 是否成功
+     */
+    public boolean setUserStatus(String userId, int status) {
+        return userDao.setUserStatus(userId, status);
     }
 
 
