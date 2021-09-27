@@ -1,5 +1,6 @@
 package com.wizzstudio.push.builder;
 
+import com.wizzstudio.push.model.ReplyDTO;
 import me.chanjar.weixin.cp.api.WxCpService;
 import me.chanjar.weixin.cp.bean.message.WxCpXmlMessage;
 import me.chanjar.weixin.cp.bean.message.WxCpXmlOutMessage;
@@ -15,16 +16,15 @@ import org.springframework.stereotype.Component;
 @Component
 public class OutTextMessageBuilder implements OutMessageBuilder {
 
-
     @Override
-    public WxCpXmlOutMessage build(String content, WxCpXmlMessage inMessage, WxCpService service) {
+    public WxCpXmlOutMessage build(ReplyDTO replyDTO) {
         WxCpXmlOutTextMessage textOutMessage = new WxCpXmlOutTextMessage();
         //设置正文
-        textOutMessage.setContent(content);
+        textOutMessage.setContent(replyDTO.getContent());
         //设置返回消息的目的UserName(也就是接收到的消息的来源UserName)
-        textOutMessage.setToUserName(inMessage.getFromUserName());
+        textOutMessage.setToUserName(replyDTO.getToUsername());
         //设置返回消息的来源UserName(也就是接收到的消息的目的UserName)
-        textOutMessage.setFromUserName(inMessage.getToUserName());
+        textOutMessage.setFromUserName(replyDTO.getFromUsername());
         return textOutMessage;
     }
 

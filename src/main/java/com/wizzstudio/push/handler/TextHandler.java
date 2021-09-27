@@ -2,7 +2,9 @@ package com.wizzstudio.push.handler;
 
 import com.wizzstudio.push.builder.OutTextMessageBuilder;
 import com.wizzstudio.push.model.MsgType;
+import com.wizzstudio.push.model.ReplyDTO;
 import com.wizzstudio.push.service.UserService;
+import com.wizzstudio.push.utils.TextUtils;
 import me.chanjar.weixin.common.error.WxErrorException;
 import me.chanjar.weixin.common.session.WxSessionManager;
 import me.chanjar.weixin.cp.api.WxCpService;
@@ -30,17 +32,22 @@ public class TextHandler implements WxCpMessageHandler {
     private UserService userService;
 
     @Override
-    public WxCpXmlOutMessage handle(WxCpXmlMessage wxCpXmlMessage, Map<String, Object> map, WxCpService wxCpService, WxSessionManager wxSessionManager) throws WxErrorException {
+    public WxCpXmlOutMessage handle(WxCpXmlMessage wxCpXmlMessage, Map<String, Object> map, WxCpService wxCpService, WxSessionManager wxSessionManager) {
         System.out.println("进入textHandler");
-        String reply;
+        //获取用户id,也就是收到的消息的发送者,也是回复消息的接收者
         String userId = wxCpXmlMessage.getFromUserName();
+        //设置回复DTO,回复的正文等待后续赋值
+        ReplyDTO replyDTO = new ReplyDTO( userId, wxCpXmlMessage.getToUserName(),null);
+        //当用户有流程状态时,进入流程判断
         if (userService.userStatusExists(userId)){
             int status = userService.getUserStatus(userId);
-            reply = routeByStatus(userId, status, wxCpXmlMessage.getContent());
+            //根据用户流程状态进行路由,并接收返回的正文内容并设置进入DTO中
+            replyDTO.setContent(routeByStatus(userId, status, wxCpXmlMessage.getContent()));
         }else {
-            return null;
+            //无流程时,根据以后的功能在这里增加后续的处理,目前直接返回如下文本
+            replyDTO.setContent("其他功能正在积极开发中,敬请期待");
         }
-        WxCpXmlOutMessage outMessage = builder.build(reply, wxCpXmlMessage, wxCpService);
+        WxCpXmlOutMessage outMessage = builder.build(replyDTO);
         System.out.println("返回接收文本消息的outMessage");
         return outMessage;
     }

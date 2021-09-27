@@ -1,6 +1,7 @@
 package com.wizzstudio.push.handler;
 
 import com.wizzstudio.push.builder.OutTextMessageBuilder;
+import com.wizzstudio.push.model.ReplyDTO;
 import me.chanjar.weixin.common.error.WxErrorException;
 import me.chanjar.weixin.common.session.WxSessionManager;
 import me.chanjar.weixin.cp.api.WxCpService;
@@ -25,11 +26,12 @@ public class SubscribeHandler implements WxCpMessageHandler {
     OutTextMessageBuilder builder;
 
     @Override
-    public WxCpXmlOutMessage handle(WxCpXmlMessage wxCpXmlMessage, Map<String, Object> map, WxCpService wxCpService, WxSessionManager wxSessionManager) throws WxErrorException {
+    public WxCpXmlOutMessage handle(WxCpXmlMessage wxCpXmlMessage, Map<String, Object> map, WxCpService wxCpService, WxSessionManager wxSessionManager) {
         System.out.println("接收到了关注事件的请求");
         String userName = wxCpXmlMessage.getFromUserName();
         String content = String.format("%s :\n你好,欢迎使用wizz企业微信推送服务,你可以参考如果例子进行消息推送,http://49.234.111.177:8088/push/text/v1?name=%s&text=hello",userName,userName);
-        WxCpXmlOutMessage outMessage = builder.build(content, wxCpXmlMessage, wxCpService);
+        ReplyDTO replyDTO = new ReplyDTO(wxCpXmlMessage.getFromUserName(),wxCpXmlMessage.getToUserName(),content);
+        WxCpXmlOutMessage outMessage = builder.build(replyDTO);
         System.out.println("关注事件返回outMessage");
         return outMessage;
     }

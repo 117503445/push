@@ -27,9 +27,13 @@ public class WxUserException extends RuntimeException{
     //用户流程状态设置失败
     public static final Integer USER_STATUS_SET_ERROR = 500011;
 
+    //异常错误码
     private Integer code;
 
+    //异常错误信息
     private String msg;
 
+    //本异常出现的流程所属用户
+    private String userId;
 
 }

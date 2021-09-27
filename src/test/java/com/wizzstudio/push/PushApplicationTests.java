@@ -10,6 +10,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @SpringBootTest
 class PushApplicationTests {
@@ -56,7 +58,7 @@ class PushApplicationTests {
     @Test
     void testTextUtils(){
         List<String> strings = userService.listNicknamesAble("lcy");
-        String convert = TextUtils.convert(strings);
+        String convert = TextUtils.convertList(strings);
         System.out.println(convert);
     }
 
@@ -101,5 +103,22 @@ class PushApplicationTests {
         Map nameAbles = redisUtils.hKeys("name-able");
         System.out.println("nameIds:"+map);
         System.out.println("nameAbles:"+nameAbles);
+    }
+
+    @Test
+    void testRegex(){
+        String[] name = new String[7];
+         name[0] = "lcy123";
+         name[1] = "lcy";
+         name[2] = "12";
+         name[3] = "l1";
+         name[4] = "lcy12345678901241";
+         name[5] = "lcy123456789";
+         name[6] = "l";
+        String pattern = "^[a-zA-Z0-9]{2,12}$";
+        for (int i = 0; i < 7; i++) {
+            boolean matches = name[i].matches(pattern);
+            System.out.println(name[i]+":"+matches);
+        }
     }
 }

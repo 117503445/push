@@ -1,6 +1,7 @@
 package com.wizzstudio.push.handler;
 
 import com.wizzstudio.push.builder.OutTextMessageBuilder;
+import com.wizzstudio.push.model.ReplyDTO;
 import com.wizzstudio.push.service.UserService;
 import com.wizzstudio.push.utils.TextUtils;
 import me.chanjar.weixin.common.error.WxErrorException;
@@ -30,10 +31,13 @@ public class NicknameDisabledHandler implements WxCpMessageHandler {
     private UserService userService;
 
     @Override
-    public WxCpXmlOutMessage handle(WxCpXmlMessage wxCpXmlMessage, Map<String, Object> map, WxCpService wxCpService, WxSessionManager wxSessionManager) throws WxErrorException {
+    public WxCpXmlOutMessage handle(WxCpXmlMessage wxCpXmlMessage, Map<String, Object> map, WxCpService wxCpService, WxSessionManager wxSessionManager) {
         List<String> nicknamesDisabled = userService.listNicknamesDisabled(wxCpXmlMessage.getFromUserName());
-        String reply = TextUtils.convert(nicknamesDisabled);
-        WxCpXmlOutMessage outMessage = textMessageBuilder.build("您的已禁用的昵称如下:\n\n" + reply, wxCpXmlMessage, wxCpService);
+        String replyContent = "您的已禁用的昵称如下:\n\n" + TextUtils.convertList(nicknamesDisabled);
+        //设置回复信息的DTO
+        ReplyDTO replyDTO = new ReplyDTO(wxCpXmlMessage.getFromUserName(),wxCpXmlMessage.getToUserName(),replyContent);
+        //交给返回文本创建类去生成返回的message
+        WxCpXmlOutMessage outMessage = textMessageBuilder.build(replyDTO);
         return outMessage;
     }
 }

@@ -4,6 +4,7 @@ import com.wizzstudio.push.dao.UserDao;
 import com.wizzstudio.push.exception.PushException;
 import com.wizzstudio.push.exception.WxUserException;
 import com.wizzstudio.push.service.UserService;
+import com.wizzstudio.push.utils.TextUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -156,11 +157,17 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public String addNickname(String userId, String nickname) {
+        //去掉用户传来的空白,转化成无空白字符串后再检验是否合法
+        String namePattern = TextUtils.verifyNamePattern(nickname);
+        //验证后为空则不合法
+        if(namePattern == null) throw new WxUserException(WxUserException.NICKNAME_ILLEGAL,"昵称不合法,请按照规则重新输入(2-12位英文数字组成)",userId);
+        //检验该昵称是否已存在
         boolean exist = userDao.checkNicknameExist(nickname);
-        if (exist) throw new WxUserException(WxUserException.NICKNAME_EXISTS,"昵称已被人使用");
+        if (exist) throw new WxUserException(WxUserException.NICKNAME_EXISTS,"昵称已被人使用",userId);
+        //插入昵称用户id表和昵称可用状态表
         boolean success = userDao.saveNicknameAndId(nickname, userId) && userDao.saveNicknameAndStatus(nickname);
-        if (!success) throw new WxUserException(WxUserException.NICKNAME_ADD_ERROR,"新增昵称失败");
-        //删除用户流程状态
+        if (!success) throw new WxUserException(WxUserException.NICKNAME_ADD_ERROR,"新增昵称失败",userId);
+        //成功添加后删除用户流程状态
         userDao.deleteUserStatus(userId);
         return nickname;
     }

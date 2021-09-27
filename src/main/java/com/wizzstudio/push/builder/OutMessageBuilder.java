@@ -1,8 +1,11 @@
 package com.wizzstudio.push.builder;
 
+import com.wizzstudio.push.model.ReplyDTO;
 import me.chanjar.weixin.cp.api.WxCpService;
 import me.chanjar.weixin.cp.bean.message.WxCpXmlMessage;
 import me.chanjar.weixin.cp.bean.message.WxCpXmlOutMessage;
+
+import java.lang.annotation.Repeatable;
 
 /**
  * @Author: TheR1sing3un
@@ -11,6 +14,6 @@ import me.chanjar.weixin.cp.bean.message.WxCpXmlOutMessage;
  */
 public interface OutMessageBuilder {
 
-    WxCpXmlOutMessage build(String content, WxCpXmlMessage message, WxCpService service);
+    WxCpXmlOutMessage build(ReplyDTO replyDTO);
 
 }

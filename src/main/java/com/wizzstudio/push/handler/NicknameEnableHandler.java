@@ -1,6 +1,7 @@
 package com.wizzstudio.push.handler;
 
 import com.wizzstudio.push.builder.OutTextMessageBuilder;
+import com.wizzstudio.push.model.ReplyDTO;
 import me.chanjar.weixin.common.error.WxErrorException;
 import me.chanjar.weixin.common.session.WxSessionManager;
 import me.chanjar.weixin.cp.api.WxCpService;
@@ -23,8 +24,9 @@ public class NicknameEnableHandler implements WxCpMessageHandler {
     private OutTextMessageBuilder textMessageBuilder;
 
     @Override
-    public WxCpXmlOutMessage handle(WxCpXmlMessage wxCpXmlMessage, Map<String, Object> map, WxCpService wxCpService, WxSessionManager wxSessionManager) throws WxErrorException {
-        WxCpXmlOutMessage outMessage = textMessageBuilder.build("点击事件" + wxCpXmlMessage.getEventKey(), wxCpXmlMessage, wxCpService);
+    public WxCpXmlOutMessage handle(WxCpXmlMessage wxCpXmlMessage, Map<String, Object> map, WxCpService wxCpService, WxSessionManager wxSessionManager) {
+        ReplyDTO replyDTO = new ReplyDTO(wxCpXmlMessage.getFromUserName(),wxCpXmlMessage.getToUserName(),"点击事件" + wxCpXmlMessage.getEventKey());
+        WxCpXmlOutMessage outMessage = textMessageBuilder.build(replyDTO);
         return outMessage;
     }
 }

@@ -1,6 +1,7 @@
 package com.wizzstudio.push.handler;
 
 import com.wizzstudio.push.builder.OutTextMessageBuilder;
+import com.wizzstudio.push.model.ReplyDTO;
 import com.wizzstudio.push.service.UserService;
 import com.wizzstudio.push.service.impl.UserServiceImpl;
 import com.wizzstudio.push.utils.TextUtils;
@@ -13,6 +14,7 @@ import me.chanjar.weixin.cp.message.WxCpMessageHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.lang.annotation.Repeatable;
 import java.util.List;
 import java.util.Map;
 
@@ -33,8 +35,10 @@ public class NicknameAbleHandler implements WxCpMessageHandler {
     @Override
     public WxCpXmlOutMessage handle(WxCpXmlMessage wxCpXmlMessage, Map<String, Object> map, WxCpService wxCpService, WxSessionManager wxSessionManager) throws WxErrorException {
         List<String> nicknamesAble = userService.listNicknamesAble(wxCpXmlMessage.getFromUserName());
-        String reply = TextUtils.convert(nicknamesAble);
-        WxCpXmlOutMessage outMessage = textMessageBuilder.build("您的可用昵称如下:\n\n" + reply, wxCpXmlMessage, wxCpService);
+        String list = TextUtils.convertList(nicknamesAble);
+        //设置回复DTO
+        ReplyDTO replyDTO = new ReplyDTO(wxCpXmlMessage.getFromUserName(),wxCpXmlMessage.getToUserName(),"您的可用昵称如下:\n\n" + list);
+        WxCpXmlOutMessage outMessage = textMessageBuilder.build(replyDTO);
         return outMessage;
     }
 }
