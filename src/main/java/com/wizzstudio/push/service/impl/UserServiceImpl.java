@@ -157,19 +157,19 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public String addNickname(String userId, String nickname) {
-        //去掉用户传来的空白,转化成无空白字符串后再检验是否合法
+        //去掉用户传来的空白,转化成无空白字符串后再检验是否合法并且返回真正的昵称
         String namePattern = TextUtils.verifyNamePattern(nickname);
         //验证后为空则不合法
         if(namePattern == null) throw new WxUserException(WxUserException.NICKNAME_ILLEGAL,"昵称不合法,请按照规则重新输入(2-12位英文数字组成)",userId);
         //检验该昵称是否已存在
-        boolean exist = userDao.checkNicknameExist(nickname);
+        boolean exist = userDao.checkNicknameExist(namePattern);
         if (exist) throw new WxUserException(WxUserException.NICKNAME_EXISTS,"昵称已被人使用",userId);
         //插入昵称用户id表和昵称可用状态表
-        boolean success = userDao.saveNicknameAndId(nickname, userId) && userDao.saveNicknameAndStatus(nickname);
+        boolean success = userDao.saveNicknameAndId(namePattern, userId) && userDao.saveNicknameAndStatus(namePattern);
         if (!success) throw new WxUserException(WxUserException.NICKNAME_ADD_ERROR,"新增昵称失败",userId);
         //成功添加后删除用户流程状态
         userDao.deleteUserStatus(userId);
-        return nickname;
+        return namePattern;
     }
 
     /**
@@ -180,7 +180,18 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public String enableNickname(String userId, String nickname) {
-        return null;
+        //去掉用户传来的空白,转化成无空白字符串后再检验是否合法并且返回真正的昵称
+        String namePattern = TextUtils.verifyNamePattern(nickname);
+        //判断昵称是否合法、是否存在并且属于该用户
+        boolean nicknameRight = namePattern !=null && userDao.checkNicknameExist(namePattern) && userId.equals(userDao.getUserIdByNickname(namePattern));
+        //当该昵称不存在或者该昵称不属于该用户时,抛出异常
+        if (!nicknameRight) throw new WxUserException(WxUserException.NICKNAME_ERROR_BELONG,"该昵称不存在,请重新输入您需要启用的昵称",userId);
+        //更新昵称的可用状态
+        boolean updateStatusByNickname = userDao.updateStatusByNickname(namePattern, true);
+        if (!updateStatusByNickname) throw new WxUserException(WxUserException.NICKNAME_STATUS_SET_ERROR,"修改昵称状态失败",userId);
+        //删除用户流程状态
+        userDao.deleteUserStatus(userId);
+        return namePattern;
     }
 
     /**
@@ -191,16 +202,18 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public String disableNickname(String userId, String nickname) {
-        //判断昵称是否存在并且属于该用户
-        boolean nicknameRight = userDao.checkNicknameExist(nickname) && userId.equals(userDao.getUserIdByNickname(nickname));
+        //去掉用户传来的空白,转化成无空白字符串后再检验是否合法并且返回真正的昵称
+        String namePattern = TextUtils.verifyNamePattern(nickname);
+        //判断昵称是否合法、是否存在并且属于该用户
+        boolean nicknameRight = namePattern != null && userDao.checkNicknameExist(namePattern) && userId.equals(userDao.getUserIdByNickname(namePattern));
         //当该昵称不存在或者该昵称不属于该用户时,抛出异常
         if (!nicknameRight) throw new WxUserException(WxUserException.NICKNAME_ERROR_BELONG,"该昵称不存在,请重新输入您需要禁用的昵称",userId);
         //更新昵称的可用状态
-        boolean updateStatusByNickname = userDao.updateStatusByNickname(nickname, false);
+        boolean updateStatusByNickname = userDao.updateStatusByNickname(namePattern, false);
         if (!updateStatusByNickname) throw new WxUserException(WxUserException.NICKNAME_STATUS_SET_ERROR,"修改昵称状态失败",userId);
         //删除用户流程状态
         userDao.deleteUserStatus(userId);
-        return nickname;
+        return namePattern;
     }
 
     /**

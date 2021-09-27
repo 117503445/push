@@ -1,11 +1,8 @@
 package com.wizzstudio.push.handler;
 
 import com.wizzstudio.push.builder.OutTextMessageBuilder;
-import com.wizzstudio.push.model.MsgType;
 import com.wizzstudio.push.model.ReplyDTO;
 import com.wizzstudio.push.service.UserService;
-import com.wizzstudio.push.utils.TextUtils;
-import me.chanjar.weixin.common.error.WxErrorException;
 import me.chanjar.weixin.common.session.WxSessionManager;
 import me.chanjar.weixin.cp.api.WxCpService;
 import me.chanjar.weixin.cp.bean.message.WxCpXmlMessage;
@@ -52,22 +49,29 @@ public class TextHandler implements WxCpMessageHandler {
         return outMessage;
     }
 
+    /**
+     * 根据用户流程状态路由到不同的方法
+     * @param userId
+     * @param status
+     * @param nickname
+     * @return 回复DTO的正文内容
+     */
     public String routeByStatus(String userId,int status,String nickname){
         String reply = "";
         switch (status){
             case 0 :
-                userService.addNickname(userId, nickname);
-                reply = "您已成功添加昵称 : "+nickname;
+                String addNickname = userService.addNickname(userId, nickname);
+                reply = "您已成功添加昵称 : "+addNickname;
                 break;
 
             case 1 :
-                userService.enableNickname(userId, nickname);
-                reply = "您已成功启用昵称 : "+nickname;
+                String enableNickname = userService.enableNickname(userId, nickname);
+                reply = "您已成功启用昵称 : "+enableNickname;
                 break;
 
             case -1 :
-                userService.disableNickname(userId,nickname);
-                reply = "您已成功禁用昵称 : "+nickname;
+                String disableNickname = userService.disableNickname(userId, nickname);
+                reply = "您已成功禁用昵称 : "+disableNickname;
                 break;
 
             default :
