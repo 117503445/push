@@ -1,6 +1,7 @@
 package com.wizzstudio.push.handler;
 
 import com.wizzstudio.push.builder.OutTextMessageBuilder;
+import com.wizzstudio.push.exception.WxUserException;
 import com.wizzstudio.push.model.ReplyDTO;
 import com.wizzstudio.push.service.UserService;
 import com.wizzstudio.push.utils.TextUtils;
@@ -32,15 +33,19 @@ public class NicknameDisableHandler implements WxCpMessageHandler {
 
     @Override
     public WxCpXmlOutMessage handle(WxCpXmlMessage wxCpXmlMessage, Map<String, Object> map, WxCpService wxCpService, WxSessionManager wxSessionManager) {
+        //获取用户id
         String userId = wxCpXmlMessage.getFromUserName();
         //先获取所有可用的昵称
         List<String> listNicknamesAble = userService.listNicknamesAble(userId);
         //将列表转成文本
         String listContent = TextUtils.convertList(listNicknamesAble);
-        String replyContent = "您的可用昵称如下:\n"+listContent+"\n请直接回复您需要禁用的昵称";
+        String replyContent = "您的可用昵称如下:\n\n"+listContent+"\n请直接回复您需要禁用的昵称";
         //设置回复DTO
         ReplyDTO replyDTO = new ReplyDTO(wxCpXmlMessage.getFromUserName(),wxCpXmlMessage.getToUserName(),replyContent);
         WxCpXmlOutMessage outMessage = textMessageBuilder.build(replyDTO);
+        //设置当前用户处于正在设置禁用昵称的流程中
+        boolean setUserStatusDisable = userService.setUserStatusDisable(userId);
+        if (!setUserStatusDisable) throw new WxUserException(WxUserException.USER_STATUS_SET_ERROR,"系统繁忙,请您稍后重试",wxCpXmlMessage.getFromUserName());
         return outMessage;
     }
 }

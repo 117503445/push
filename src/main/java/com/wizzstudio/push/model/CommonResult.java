@@ -24,9 +24,14 @@ public final class CommonResult<T> {
         return new CommonResult(SUCCESS, "success", null);
     }
 
-    public static <T>CommonResult error(T data) {
-        return new CommonResult(ERROR, "success", data);
+    public static <T>CommonResult ok(T data) {
+        return new CommonResult(SUCCESS, "success", data);
     }
+
+    public static CommonResult error() {
+        return new CommonResult(ERROR, "success",null);
+    }
+
 
     public CommonResult code(Integer code){
         this.code = code;

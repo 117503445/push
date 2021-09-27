@@ -191,7 +191,16 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public String disableNickname(String userId, String nickname) {
-        return null;
+        //判断昵称是否存在并且属于该用户
+        boolean nicknameRight = userDao.checkNicknameExist(nickname) && userId.equals(userDao.getUserIdByNickname(nickname));
+        //当该昵称不存在或者该昵称不属于该用户时,抛出异常
+        if (!nicknameRight) throw new WxUserException(WxUserException.NICKNAME_ERROR_BELONG,"该昵称不存在,请重新输入您需要禁用的昵称",userId);
+        //更新昵称的可用状态
+        boolean updateStatusByNickname = userDao.updateStatusByNickname(nickname, false);
+        if (!updateStatusByNickname) throw new WxUserException(WxUserException.NICKNAME_STATUS_SET_ERROR,"修改昵称状态失败",userId);
+        //删除用户流程状态
+        userDao.deleteUserStatus(userId);
+        return nickname;
     }
 
     /**

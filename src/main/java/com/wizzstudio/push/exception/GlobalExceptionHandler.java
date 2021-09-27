@@ -35,7 +35,7 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(value = Exception.class)
     public CommonResult exceptionHandler( Exception e) {
-        return new CommonResult(1, "err", e.getMessage());
+        return CommonResult.error();
     }
 
     /**

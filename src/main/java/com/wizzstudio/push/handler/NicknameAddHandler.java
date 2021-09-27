@@ -32,12 +32,12 @@ public class NicknameAddHandler implements WxCpMessageHandler {
 
     @Override
     public WxCpXmlOutMessage handle(WxCpXmlMessage wxCpXmlMessage, Map<String, Object> map, WxCpService wxCpService, WxSessionManager wxSessionManager) throws WxErrorException {
-        //设置用户状态为正在添加昵称中
-        boolean setUserStatusAdd = userService.setUserStatusAdd(wxCpXmlMessage.getFromUserName());
-        if (!setUserStatusAdd) throw new WxUserException(WxUserException.USER_STATUS_SET_ERROR,"系统繁忙,请您稍后重试",wxCpXmlMessage.getFromUserName());
         //设置回复DTO
         ReplyDTO replyDTO = new ReplyDTO(wxCpXmlMessage.getFromUserName(),wxCpXmlMessage.getToUserName(),"请直接回复您需要添加的昵称(由2-12位英文数字组成)");
         WxCpXmlOutMessage outMessage = textMessageBuilder.build(replyDTO);
+        //设置用户状态为正在添加昵称中
+        boolean setUserStatusAdd = userService.setUserStatusAdd(wxCpXmlMessage.getFromUserName());
+        if (!setUserStatusAdd) throw new WxUserException(WxUserException.USER_STATUS_SET_ERROR,"系统繁忙,请您稍后重试",wxCpXmlMessage.getFromUserName());
         return outMessage;
     }
 }
