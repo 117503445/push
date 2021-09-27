@@ -33,6 +33,9 @@ public class WxUserException extends RuntimeException{
     //用户禁用了自己没有的昵称时的异常
     public static final Integer NICKNAME_ERROR_BELONG = 400012;
 
+    //用户初始化昵称失败
+    public static final Integer USER_INIT_ERROR = 500012;
+
     //异常错误码
     private Integer code;
 

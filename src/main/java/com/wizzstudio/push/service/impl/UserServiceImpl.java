@@ -39,7 +39,8 @@ public class UserServiceImpl implements UserService {
     public String initUser(String userId) {
         //初始的昵称就用userId来表示,初始状态就是可用状态
         boolean success = userDao.saveNicknameAndId(userId, userId) && userDao.saveNicknameAndStatus(userId);
-        return success ? userId : null;
+        if (!success) throw new WxUserException(WxUserException.USER_INIT_ERROR,"用户昵称初始化失败,请联系管理员",userId);
+        return userId;
     }
 
     /**
@@ -49,9 +50,11 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public String getUserIdByAbleNickname(String nickname) {
+        //验证昵称是否存在
         boolean exist = userDao.checkNicknameExist(nickname);
         if (!exist) throw new PushException(PushException.NICKNAME_NO_EXISTS,"该昵称不存在");
         String userId = userDao.getUserIdByNickname(nickname);
+        //获取昵称可用状态
         boolean status = userDao.getStatusByNickname(nickname);
         if (!status) throw new PushException(PushException.NICKNAME_DISABLE,"该昵称已被用户禁用");
         return userId;
@@ -163,7 +166,7 @@ public class UserServiceImpl implements UserService {
         if(namePattern == null) throw new WxUserException(WxUserException.NICKNAME_ILLEGAL,"昵称不合法,请按照规则重新输入(2-12位英文数字组成)",userId);
         //检验该昵称是否已存在
         boolean exist = userDao.checkNicknameExist(namePattern);
-        if (exist) throw new WxUserException(WxUserException.NICKNAME_EXISTS,"昵称已被人使用",userId);
+        if (exist) throw new WxUserException(WxUserException.NICKNAME_EXISTS,"昵称已被人使用,请重新输入您需要添加的昵称",userId);
         //插入昵称用户id表和昵称可用状态表
         boolean success = userDao.saveNicknameAndId(namePattern, userId) && userDao.saveNicknameAndStatus(namePattern);
         if (!success) throw new WxUserException(WxUserException.NICKNAME_ADD_ERROR,"新增昵称失败",userId);
