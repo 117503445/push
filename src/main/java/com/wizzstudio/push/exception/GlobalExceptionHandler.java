@@ -52,4 +52,14 @@ public class GlobalExceptionHandler {
         String encryptedXml = outMessage.toEncryptedXml(WechatService.getWxCpService().getWxCpConfigStorage());
         return encryptedXml;
     }
+
+    /**
+     * 对于推送者在调用推送功能的时候产生的异常的拦截并返回
+     * @param pushException
+     * @return 统一返回类
+     */
+    @ExceptionHandler(value = PushException.class)
+    public CommonResult pushException(PushException pushException){
+        return CommonResult.error().code(pushException.getCode()).msg(pushException.getMsg());
+    }
 }

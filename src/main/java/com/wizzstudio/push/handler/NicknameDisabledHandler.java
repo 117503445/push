@@ -10,6 +10,7 @@ import me.chanjar.weixin.cp.api.WxCpService;
 import me.chanjar.weixin.cp.bean.message.WxCpXmlMessage;
 import me.chanjar.weixin.cp.bean.message.WxCpXmlOutMessage;
 import me.chanjar.weixin.cp.message.WxCpMessageHandler;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -33,9 +34,13 @@ public class NicknameDisabledHandler implements WxCpMessageHandler {
     @Override
     public WxCpXmlOutMessage handle(WxCpXmlMessage wxCpXmlMessage, Map<String, Object> map, WxCpService wxCpService, WxSessionManager wxSessionManager) {
         List<String> nicknamesDisabled = userService.listNicknamesDisabled(wxCpXmlMessage.getFromUserName());
-        String replyContent = "您的已禁用的昵称如下:\n\n" + TextUtils.convertList(nicknamesDisabled);
         //设置回复信息的DTO
-        ReplyDTO replyDTO = new ReplyDTO(wxCpXmlMessage.getFromUserName(),wxCpXmlMessage.getToUserName(),replyContent);
+        ReplyDTO replyDTO = new ReplyDTO(wxCpXmlMessage.getFromUserName(),wxCpXmlMessage.getToUserName(),null);
+        if (CollectionUtils.isEmpty(nicknamesDisabled)){
+            replyDTO.setContent("您没有已禁用的昵称");
+        }else {
+            replyDTO.setContent( "您的已禁用的昵称如下:\n\n" + TextUtils.convertList(nicknamesDisabled));
+        }
         //交给返回文本创建类去生成返回的message
         WxCpXmlOutMessage outMessage = textMessageBuilder.build(replyDTO);
         return outMessage;

@@ -29,7 +29,7 @@ public final class CommonResult<T> {
     }
 
     public static CommonResult error() {
-        return new CommonResult(ERROR, "success",null);
+        return new CommonResult(ERROR, "error",null);
     }
 
 
@@ -47,6 +47,7 @@ public final class CommonResult<T> {
         this.data = data;
         return this;
     }
+
 }
 
 

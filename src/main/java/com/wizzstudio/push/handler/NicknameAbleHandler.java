@@ -11,6 +11,7 @@ import me.chanjar.weixin.cp.api.WxCpService;
 import me.chanjar.weixin.cp.bean.message.WxCpXmlMessage;
 import me.chanjar.weixin.cp.bean.message.WxCpXmlOutMessage;
 import me.chanjar.weixin.cp.message.WxCpMessageHandler;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -35,9 +36,13 @@ public class NicknameAbleHandler implements WxCpMessageHandler {
     @Override
     public WxCpXmlOutMessage handle(WxCpXmlMessage wxCpXmlMessage, Map<String, Object> map, WxCpService wxCpService, WxSessionManager wxSessionManager) throws WxErrorException {
         List<String> nicknamesAble = userService.listNicknamesAble(wxCpXmlMessage.getFromUserName());
-        String list = TextUtils.convertList(nicknamesAble);
-        //设置回复DTO
-        ReplyDTO replyDTO = new ReplyDTO(wxCpXmlMessage.getFromUserName(),wxCpXmlMessage.getToUserName(),"您的可用昵称如下:\n\n" + list);
+        ReplyDTO replyDTO = new ReplyDTO(wxCpXmlMessage.getFromUserName(),wxCpXmlMessage.getToUserName(),null);
+        if (CollectionUtils.isEmpty(nicknamesAble)){//集合为空时
+            replyDTO.setContent("您没有可用的昵称,请添加昵称");
+        }else {//非空时
+            String list = TextUtils.convertList(nicknamesAble);
+            replyDTO.setContent("您的可用昵称如下:\n\n"+list);
+        }
         WxCpXmlOutMessage outMessage = textMessageBuilder.build(replyDTO);
         return outMessage;
     }

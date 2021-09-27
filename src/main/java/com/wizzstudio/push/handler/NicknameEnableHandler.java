@@ -11,6 +11,7 @@ import me.chanjar.weixin.cp.api.WxCpService;
 import me.chanjar.weixin.cp.bean.message.WxCpXmlMessage;
 import me.chanjar.weixin.cp.bean.message.WxCpXmlOutMessage;
 import me.chanjar.weixin.cp.message.WxCpMessageHandler;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -35,17 +36,23 @@ public class NicknameEnableHandler implements WxCpMessageHandler {
     public WxCpXmlOutMessage handle(WxCpXmlMessage wxCpXmlMessage, Map<String, Object> map, WxCpService wxCpService, WxSessionManager wxSessionManager) {
         //获取用户id
         String userId = wxCpXmlMessage.getFromUserName();
-        //先获取所有可用的昵称
-        List<String> listNicknamesDisabled = userService.listNicknamesDisabled(userId);
-        //将列表转成文本
-        String listContent = TextUtils.convertList(listNicknamesDisabled);
-        String replyContent = "您的已禁用昵称如下:\n\n"+listContent+"\n请直接回复您需要启用的昵称";
-        //设置回复DTO
-        ReplyDTO replyDTO = new ReplyDTO(wxCpXmlMessage.getFromUserName(),wxCpXmlMessage.getToUserName(),replyContent);
-        WxCpXmlOutMessage outMessage = textMessageBuilder.build(replyDTO);
         //设置当前用户处于正在设置启用昵称的流程中
         boolean setUserStatusDisable = userService.setUserStatusEnable(userId);
-        if (!setUserStatusDisable) throw new WxUserException(WxUserException.USER_STATUS_SET_ERROR,"系统繁忙,请您稍后重试",wxCpXmlMessage.getFromUserName());
+        if (!setUserStatusDisable) throw new WxUserException(WxUserException.USER_STATUS_SET_ERROR,"系统繁忙,请您稍后重试",userId);
+        //先获取所有可用的昵称
+        List<String> listNicknamesDisabled = userService.listNicknamesDisabled(userId);
+        //设置回复DTO
+        ReplyDTO replyDTO = new ReplyDTO(wxCpXmlMessage.getFromUserName(),wxCpXmlMessage.getToUserName(),null);
+        if (CollectionUtils.isEmpty(listNicknamesDisabled)){
+            replyDTO.setContent("您没有已禁用的昵称");
+            //删除流程状态
+            userService.deleteUserStatus(userId);
+        }else {
+            //将列表转成文本
+            String listContent = TextUtils.convertList(listNicknamesDisabled);
+            replyDTO.setContent("您的已禁用昵称如下:\n\n"+listContent+"\n请直接回复您需要启用的昵称");
+        }
+        WxCpXmlOutMessage outMessage = textMessageBuilder.build(replyDTO);
         return outMessage;
     }
 }
