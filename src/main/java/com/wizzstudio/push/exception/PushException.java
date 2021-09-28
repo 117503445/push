@@ -20,6 +20,9 @@ public class PushException extends RuntimeException{
     //该昵称已被禁用
     public static final Integer NICKNAME_DISABLE = 400002;
 
+    //推送的正文为空
+    public static final Integer CONTENT_EMPTY = 400003;
+
     private Integer code;
 
     private String msg;
