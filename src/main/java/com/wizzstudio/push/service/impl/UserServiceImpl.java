@@ -115,8 +115,6 @@ public class UserServiceImpl implements UserService {
                 nicknames.add(nicknameNow);
             }
         }
-        //删除用户流程状态
-        userDao.deleteUserStatus(userId);
         return nicknames;
     }
 
@@ -147,8 +145,6 @@ public class UserServiceImpl implements UserService {
                 nicknames.add(nicknameNow);
             }
         }
-        //删除用户流程状态
-        userDao.deleteUserStatus(userId);
         return nicknames;
     }
 

@@ -35,8 +35,9 @@ public class NicknameAbleHandler implements WxCpMessageHandler {
 
     @Override
     public WxCpXmlOutMessage handle(WxCpXmlMessage wxCpXmlMessage, Map<String, Object> map, WxCpService wxCpService, WxSessionManager wxSessionManager) throws WxErrorException {
-        List<String> nicknamesAble = userService.listNicknamesAble(wxCpXmlMessage.getFromUserName());
-        ReplyDTO replyDTO = new ReplyDTO(wxCpXmlMessage.getFromUserName(),wxCpXmlMessage.getToUserName(),null);
+        String userId = wxCpXmlMessage.getFromUserName();
+        List<String> nicknamesAble = userService.listNicknamesAble(userId);
+        ReplyDTO replyDTO = new ReplyDTO(userId,wxCpXmlMessage.getToUserName(),null);
         if (CollectionUtils.isEmpty(nicknamesAble)){//集合为空时
             replyDTO.setContent("您没有可用的昵称,请添加昵称");
         }else {//非空时
@@ -44,6 +45,8 @@ public class NicknameAbleHandler implements WxCpMessageHandler {
             replyDTO.setContent("您的可用昵称如下:\n\n"+list);
         }
         WxCpXmlOutMessage outMessage = textMessageBuilder.build(replyDTO);
+        //删除流程状态
+        userService.deleteUserStatus(userId);
         return outMessage;
     }
 }

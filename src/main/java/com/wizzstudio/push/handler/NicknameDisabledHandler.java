@@ -33,9 +33,10 @@ public class NicknameDisabledHandler implements WxCpMessageHandler {
 
     @Override
     public WxCpXmlOutMessage handle(WxCpXmlMessage wxCpXmlMessage, Map<String, Object> map, WxCpService wxCpService, WxSessionManager wxSessionManager) {
-        List<String> nicknamesDisabled = userService.listNicknamesDisabled(wxCpXmlMessage.getFromUserName());
+        String userId = wxCpXmlMessage.getFromUserName();
+        List<String> nicknamesDisabled = userService.listNicknamesDisabled(userId);
         //设置回复信息的DTO
-        ReplyDTO replyDTO = new ReplyDTO(wxCpXmlMessage.getFromUserName(),wxCpXmlMessage.getToUserName(),null);
+        ReplyDTO replyDTO = new ReplyDTO(userId,wxCpXmlMessage.getToUserName(),null);
         if (CollectionUtils.isEmpty(nicknamesDisabled)){
             replyDTO.setContent("您没有已禁用的昵称");
         }else {
@@ -43,6 +44,8 @@ public class NicknameDisabledHandler implements WxCpMessageHandler {
         }
         //交给返回文本创建类去生成返回的message
         WxCpXmlOutMessage outMessage = textMessageBuilder.build(replyDTO);
+        //删除用户流程状态
+        userService.deleteUserStatus(userId);
         return outMessage;
     }
 }
