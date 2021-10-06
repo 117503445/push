@@ -1,4 +1,4 @@
-FROM maven:3.6.3-openjdk-8 AS MAVEN_BUILD
+FROM maven:3.8.2-jdk-8 AS MAVEN_BUILD
 COPY pom.xml /build/
 COPY src /build/src/
 # COPY ./src/main/resources/app.yml /build/src/main/resources/application.yml
