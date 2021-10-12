@@ -18,4 +18,4 @@ spring:
     host: ""
     port: ""
     password: ""
-text-url: ""
+text-url: "https://${YOUR-HOST}/push/text/v2"
