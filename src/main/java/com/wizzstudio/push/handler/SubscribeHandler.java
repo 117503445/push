@@ -10,6 +10,7 @@ import me.chanjar.weixin.cp.bean.message.WxCpXmlMessage;
 import me.chanjar.weixin.cp.bean.message.WxCpXmlOutMessage;
 import me.chanjar.weixin.cp.message.WxCpMessageHandler;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.util.Map;
@@ -23,6 +24,9 @@ import java.util.Map;
 @Component
 public class SubscribeHandler implements WxCpMessageHandler {
 
+    @Value("${text-url}")
+    private String url;
+
     @Autowired
     OutTextMessageBuilder builder;
 
@@ -34,7 +38,7 @@ public class SubscribeHandler implements WxCpMessageHandler {
         System.out.println("接收到了关注事件的请求");
         String userId = wxCpXmlMessage.getFromUserName();
         String firstNickname = userService.initUser(userId);
-        String content = String.format("%s :\n你好,欢迎使用wizz-studio企业微信推送服务,你可以参考如下例子进行消息推送,http://49.234.111.177:8088/push/text/v1?name=%s&text=hello\nurl中的name是您的昵称" +
+        String content = String.format("%s :\n你好,欢迎使用wizz-studio企业微信推送服务,你可以参考如下例子进行消息推送,"+url+"?name=%s&text=hello\nurl中的name是您的昵称" +
                 ",初始昵称为您的用户名,可以通过菜单对昵称进行管理,建议每个服务用不同的昵称进行区别",firstNickname,firstNickname);
         ReplyDTO replyDTO = new ReplyDTO(wxCpXmlMessage.getFromUserName(),wxCpXmlMessage.getToUserName(),content);
         WxCpXmlOutMessage outMessage = builder.build(replyDTO);
