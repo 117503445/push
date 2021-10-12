@@ -5,10 +5,12 @@ services:
     container_name: push
     restart: unless-stopped
     ports:
-      - "8080:80"
+      - "8080:8080"
     volumes:
-      - ./application.yml:/root/config/application.yml
+      - ./src/main/resources/application.yml:/root/config/application.yml
   redis:
     image: redis
     restart: unless-stopped
+    ports:
+      - "6379:6379"
     command: --requirepass "MY_PASSWORD" --appendonly yes # CHANGE PASSWORD !!!
