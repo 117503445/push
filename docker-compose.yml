@@ -7,7 +7,7 @@ services:
     ports:
       - "8080:8080"
     volumes:
-      - ./src/main/resources/application.yml:/root/application.yml
+      - ./src/main/resources/application.yml:/root/config/application.yml
   redis:
     image: redis
     restart: unless-stopped

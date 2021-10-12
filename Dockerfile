@@ -4,7 +4,7 @@ COPY src /build/src/
 # COPY ./src/main/resources/app.yml /build/src/main/resources/application.yml
 WORKDIR /build/
 RUN mvn package -Dmaven.test.skip=true
-FROM openjdk:17
+FROM openjdk:17-alpine
 WORKDIR /root
 EXPOSE 80
 COPY --from=MAVEN_BUILD /build/target/push.jar /root/push.jar
